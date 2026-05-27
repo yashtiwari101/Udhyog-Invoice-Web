@@ -1,0 +1,263 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Noto Sans', Arial, sans-serif;
+  background: #0d1142;
+  color: #222;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Background blurred shapes */
+.bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+.shape { position: absolute; border-radius: 50%; filter: blur(100px); opacity: 0.18; }
+.shape1 { width: 500px; height: 500px; background: #ffeb3b; top: -150px; right: -120px; }
+.shape2 { width: 350px; height: 350px; background: #7986cb; bottom: -100px; left: -100px; }
+.shape3 { width: 200px; height: 200px; background: #c5cae9; top: 40%; left: 50%; }
+
+/* NAV */
+.login-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 28px;
+  position: relative;
+  z-index: 10;
+  border-bottom: 2px solid rgba(255, 235, 59, 0.15);
+}
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+.logo-icon {
+  width: 38px; height: 38px;
+  background: #ffeb3b; color: #1a237e;
+  font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 20px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+}
+.logo-text {
+  font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 20px;
+  color: #fff; white-space: nowrap;
+}
+.logo-text .accent { color: #ffeb3b; }
+.back-link {
+  font-family: 'Baloo 2', cursive; font-weight: 600; font-size: 14px;
+  color: #c5cae9; text-decoration: none; transition: color 0.2s;
+}
+.back-link:hover { color: #ffeb3b; }
+
+/* MAIN WRAP */
+.main-wrap {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 15px;
+  position: relative;
+  z-index: 10;
+}
+
+/* LOGIN BOX */
+.login-box {
+  background: #fff;
+  border: 2px solid #c5cae9;
+  border-radius: 20px;
+  padding: 36px 32px 30px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.25);
+  animation: fadeUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.login-header { text-align: center; margin-bottom: 24px; }
+.login-avatar {
+  font-size: 40px;
+  margin-bottom: 10px;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+}
+
+.form-heading {
+  font-family: 'Baloo 2', cursive;
+  font-size: 24px; font-weight: 800;
+  color: #1a237e; margin-bottom: 4px;
+}
+.sub-text {
+  font-size: 14px; color: #888;
+  margin-bottom: 0;
+}
+
+/* FORM FIELDS */
+.form-group {
+  display: flex; flex-direction: column;
+  margin-bottom: 18px;
+}
+.form-group label {
+  font-family: 'Baloo 2', cursive;
+  font-size: 13px; font-weight: 700;
+  color: #1a237e; margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.input-icon {
+  position: absolute; left: 12px;
+  font-size: 16px; pointer-events: none;
+  z-index: 1;
+}
+.form-group input {
+  width: 100%;
+  border: 2px solid #c5cae9;
+  border-radius: 10px;
+  padding: 12px 14px 12px 42px;
+  font-size: 14px;
+  font-family: 'Noto Sans', Arial, sans-serif;
+  background: #f5f7ff;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+.form-group input:focus {
+  border-color: #1a237e;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(26, 35, 126, 0.08);
+}
+.form-group input::placeholder { color: #aaa; }
+
+/* Show/Hide password */
+.show-pass {
+  position: absolute; right: 12px;
+  font-size: 12px; color: #1a237e;
+  cursor: pointer; font-weight: 700;
+  user-select: none;
+  font-family: 'Baloo 2', cursive;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+.show-pass:hover { background: #e8eaf6; }
+
+/* Forgot password */
+.forgot-row { text-align: right; margin-top: -10px; margin-bottom: 20px; }
+.forgot-row a {
+  font-size: 13px; color: #1a237e;
+  text-decoration: none; font-weight: 600;
+  font-family: 'Baloo 2', cursive;
+}
+.forgot-row a:hover { text-decoration: underline; }
+
+/* Terms row (for signup) */
+.terms-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 18px; font-size: 13px;
+}
+.terms-row input { width: 16px; height: 16px; cursor: pointer; }
+.terms-row a { color: #1a237e; text-decoration: none; }
+.terms-row a:hover { text-decoration: underline; }
+
+/* LOGIN BUTTON */
+.btn-login {
+  width: 100%;
+  background: #1a237e;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 12px;
+  font-family: 'Baloo 2', cursive;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  letter-spacing: 0.5px;
+}
+.btn-login:hover {
+  background: #283593;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(26, 35, 126, 0.3);
+}
+.btn-login:active { transform: scale(0.98); }
+
+/* DIVIDER */
+.divider { text-align: center; margin: 20px 0 16px; position: relative; }
+.divider::before {
+  content: ''; position: absolute;
+  top: 50%; left: 0; right: 0;
+  height: 1px; background: #e0e0e0;
+}
+.divider span {
+  background: #fff; padding: 0 14px;
+  font-size: 12px; color: #aaa;
+  position: relative; font-weight: 600;
+  font-family: 'Baloo 2', cursive;
+}
+
+/* SIGNUP TEXT */
+.signup-text {
+  text-align: center; font-size: 14px; color: #555;
+}
+.signup-text a {
+  color: #1a237e; font-weight: 700;
+  text-decoration: none;
+  font-family: 'Baloo 2', cursive;
+}
+.signup-text a:hover { text-decoration: underline; }
+
+/* FREE BADGE */
+.free-badge {
+  text-align: center;
+  margin-top: 18px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #1a237e;
+  background: rgba(255, 235, 59, 0.15);
+  border: 1.5px solid rgba(255, 235, 59, 0.3);
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-family: 'Baloo 2', cursive;
+}
+
+/* MESSAGE BOX */
+.msg-box {
+  padding: 10px 14px; border-radius: 10px;
+  font-size: 13px; margin-bottom: 16px;
+  font-weight: 600; text-align: center;
+}
+.msg-box.error {
+  background: #ffebee; color: #c62828;
+  border: 1.5px solid #ef9a9a;
+}
+.msg-box.success {
+  background: #e8f5e9; color: #2e7d32;
+  border: 1.5px solid #81c784;
+}
+
+/* FOOTER */
+.footer {
+  background: rgba(13, 17, 66, 0.8);
+  color: #c5cae9;
+  text-align: center;
+  padding: 16px;
+  font-size: 12px;
+  position: relative;
+  z-index: 10;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+.footer b { color: #ffeb3b; }
+
+/* MOBILE */
+@media (max-width: 480px) {
+  .login-box { padding: 28px 20px 24px; border-radius: 16px; }
+  .form-heading { font-size: 20px; }
+  .login-nav { padding: 14px 16px; }
+  .back-link { font-size: 12px; }
+}

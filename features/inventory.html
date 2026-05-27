@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inventory - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Noto Sans', Arial, sans-serif;
+    }
+
+    /* Dark Theme like the rest of the app */
+    body {
+      background: #eef2ff;
+      color: #222;
+      padding-bottom: 50px;
+    }
+
+    /* Topbar */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      height: 58px;
+      background: #1a237e;
+      border-bottom: 3px solid #ffeb3b;
+    }
+    .topbar .logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .topbar .logo-icon {
+      width: 32px; height: 32px;
+      background: #ffeb3b; color: #1a237e;
+      font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 16px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar .logo-text {
+      font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 17px;
+      color: #fff;
+    }
+    .topbar .logo-text .accent { color: #ffeb3b; }
+    .topbar h1 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #c5cae9;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    /* Action Bar (Search & Buttons) */
+    .action-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      background: #111;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+
+    .action-bar input {
+      flex: 1; min-width: 200px; padding: 12px;
+      background: #fafbff; border: 1.5px solid #c5cae9;
+      color: #222; border-radius: 8px; font-size: 14px;
+    }
+    .action-bar input:focus { border-color: #1a237e; outline: none; }
+
+    .action-bar button {
+      padding: 12px 20px; background: #1a237e; color: white;
+      border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 14px;
+    }
+    .action-bar button:hover { background: #283593; }
+
+    .btn-green {
+      background: #2e7d32 !important;
+    }
+
+    .btn-green:hover {
+      background: #1b5e20 !important;
+    }
+
+    /* Add Form */
+    .add-form {
+      background: #fff; padding: 20px;
+      border: 1.5px solid #c5cae9; border-radius: 10px;
+      margin-bottom: 20px; display: none;
+    }
+    .add-form h3 {
+      margin-bottom: 15px; font-size: 18px;
+      border-bottom: 1px solid #e0e0e0; padding-bottom: 8px; color: #1a237e;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: #aaa;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%; padding: 10px; background: #fafbff;
+      border: 1.5px solid #c5cae9; color: #222; border-radius: 6px; font-size: 14px;
+    }
+    .form-group input:focus,
+    .form-group select:focus { border-color: #1a237e; outline: none; }
+
+    /* Table for "Busy App" feel */
+    .table-responsive {
+      overflow-x: auto; background: #fff;
+      border-radius: 10px; border: 1.5px solid #c5cae9;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    th, td {
+      padding: 12px 10px; text-align: left;
+      border-bottom: 1px solid #e8eaf6; border-right: 1px solid #e8eaf6;
+    }
+    th {
+      background: #1a237e; color: #fff; font-weight: bold; border-bottom: 2px solid #283593;
+    }
+    tr:hover { background: #f5f7ff; }
+
+    .text-right {
+      text-align: right;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .del-btn {
+      background: #f44336;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    .del-btn:hover {
+      background: #d32f2f;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <a href="features.html" class="logo">
+      <div class="logo-icon">U</div>
+      <span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+    <h1>Inventory Master</h1>
+  </div>
+
+  <div class="container">
+
+    <!-- Action Bar with Search Button -->
+    <div class="action-bar">
+      <input type="text" id="searchInput" placeholder="Search product by name or item code..." />
+      <button onclick="searchProducts()">Search Product</button>
+      <button class="btn-green" onclick="toggleForm()">+ Add New Item</button>
+    </div>
+
+    <!-- Inventory Form (Beginner logic style) -->
+    <div class="add-form" id="addForm">
+      <h3>Add New Inventory Item</h3>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Item Code / SKU</label>
+          <input type="text" id="i-code" placeholder="e.g. ITM001">
+        </div>
+        <div class="form-group">
+          <label>Item Name *</label>
+          <input type="text" id="i-name" placeholder="Product name">
+        </div>
+        <div class="form-group">
+          <label>Item Group / Category</label>
+          <input type="text" id="i-group" placeholder="e.g. Electronics">
+        </div>
+        <div class="form-group">
+          <label>Unit</label>
+          <select id="i-unit">
+            <option value="Pcs">Pcs (Pieces)</option>
+            <option value="Kg">Kg (Kilograms)</option>
+            <option value="Ltr">Ltr (Liters)</option>
+            <option value="Box">Box</option>
+            <option value="Mtr">Mtr (Meters)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Opening Stock</label>
+          <input type="number" id="i-stock" value="0">
+        </div>
+        <div class="form-group">
+          <label>Purchase Price</label>
+          <input type="number" id="i-pprice" value="0.00" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>Sale Price *</label>
+          <input type="number" id="i-sprice" value="0.00" step="0.01">
+        </div>
+        <div class="form-group">
+          <label>GST / Tax %</label>
+          <select id="i-tax">
+            <option value="0">0%</option>
+            <option value="5">5%</option>
+            <option value="12">12%</option>
+            <option value="18" selected>18%</option>
+            <option value="28">28%</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>HSN / SAC Code</label>
+          <input type="text" id="i-hsn" placeholder="e.g. 8517">
+        </div>
+      </div>
+      <button class="btn-green" onclick="saveItem()">Save Item</button>
+      <button
+        style="background:#444; color:#fff; padding:12px 20px; border:none; border-radius:6px; margin-left:10px; cursor:pointer;"
+        onclick="toggleForm()">Cancel</button>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Item Code</th>
+            <th>Item Name</th>
+            <th>Group</th>
+            <th class="text-right">Stock Qty</th>
+            <th>Unit</th>
+            <th class="text-right">Pur. Price</th>
+            <th class="text-right">Sale Price</th>
+            <th class="text-center">Tax %</th>
+            <th class="text-center">Action</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryBody">
+          <!-- Rows will be injected here via JavaScript -->
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <script>
+    // Get existing products from localStorage so data is shared across the app
+    var inventory = JSON.parse(localStorage.getItem('udhyog_products') || '[]');
+
+    function toggleForm() {
+      var form = document.getElementById('addForm');
+      form.style.display = form.style.display === 'block' ? 'none' : 'block';
+    }
+
+    function renderTable(data) {
+      var tbody = document.getElementById('inventoryBody');
+      tbody.innerHTML = '';
+
+      if (data.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="10" class="text-center" style="padding: 20px; color: #777;">No items found in inventory.</td></tr>';
+        return;
+      }
+
+      for (var i = 0; i < data.length; i++) {
+        var item = data[i];
+
+        // Handle fields (some items might be created from old add-items.html)
+        var code = item.code || item.barcode || '-';
+        var group = item.group || '-';
+        var stock = item.stock !== undefined ? item.stock : (item.qty || 0);
+        var unit = item.unit || 'Pcs';
+        var pprice = item.pprice || 0;
+        var sprice = item.sprice || item.price || 0;
+        var tax = item.tax || '0';
+
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td>' + (i + 1) + '</td>' +
+          '<td>' + esc(code) + '</td>' +
+          '<td style="font-weight:bold; color:#2979ff;">' + esc(item.name) + '</td>' +
+          '<td>' + esc(group) + '</td>' +
+          '<td class="text-right" style="font-weight:bold;">' + stock + '</td>' +
+          '<td>' + esc(unit) + '</td>' +
+          '<td class="text-right">₹' + Number(pprice).toFixed(2) + '</td>' +
+          '<td class="text-right">₹' + Number(sprice).toFixed(2) + '</td>' +
+          '<td class="text-center">' + tax + '%</td>' +
+          '<td class="text-center">' +
+          '<button class="del-btn" onclick="deleteItem(' + item.id + ')">Delete</button>' +
+          '</td>';
+
+        tbody.appendChild(tr);
+      }
+    }
+
+    function searchProducts() {
+      var query = document.getElementById('searchInput').value.toLowerCase().trim();
+      if (!query) {
+        renderTable(inventory); // show all if empty
+        return;
+      }
+
+      // Filter inventory by name or code
+      var filtered = inventory.filter(function (item) {
+        var name = (item.name || '').toLowerCase();
+        var code = (item.code || item.barcode || '').toLowerCase();
+        return name.indexOf(query) !== -1 || code.indexOf(query) !== -1;
+      });
+
+      renderTable(filtered);
+    }
+
+    function saveItem() {
+      var name = document.getElementById('i-name').value.trim();
+      var sprice = document.getElementById('i-sprice').value;
+
+      if (!name || !sprice) {
+        alert("Please enter Item Name and Sale Price.");
+        return;
+      }
+
+      var newItem = {
+        id: Date.now(),
+        code: document.getElementById('i-code').value.trim(),
+        name: name,
+        group: document.getElementById('i-group').value.trim(),
+        unit: document.getElementById('i-unit').value,
+        stock: parseInt(document.getElementById('i-stock').value) || 0,
+        qty: parseInt(document.getElementById('i-stock').value) || 0, // backwards compatibility
+        pprice: parseFloat(document.getElementById('i-pprice').value) || 0,
+        sprice: parseFloat(sprice) || 0,
+        price: parseFloat(sprice) || 0, // backwards compatibility
+        tax: document.getElementById('i-tax').value,
+        hsn: document.getElementById('i-hsn').value.trim(),
+        barcode: document.getElementById('i-code').value.trim()
+      };
+
+      // Add to front of array
+      inventory.unshift(newItem);
+
+      try {
+        // Save to localStorage
+        localStorage.setItem('udhyog_products', JSON.stringify(inventory));
+        
+        // Clear inputs
+        document.getElementById('i-name').value = '';
+        document.getElementById('i-code').value = '';
+        document.getElementById('i-group').value = '';
+        document.getElementById('i-stock').value = '0';
+        document.getElementById('i-pprice').value = '0.00';
+        document.getElementById('i-sprice').value = '0.00';
+        document.getElementById('i-hsn').value = '';
+
+        toggleForm(); // Hide form
+        renderTable(inventory); // Refresh table
+        alert("Item saved successfully!");
+      } catch (e) {
+        inventory.shift(); // revert
+        alert("Storage Error: Unable to save item.");
+      }
+    }
+
+    function deleteItem(id) {
+      if (confirm("Are you sure you want to delete this item?")) {
+        var original = inventory;
+        inventory = inventory.filter(function (item) { return item.id !== id; });
+        try {
+          localStorage.setItem('udhyog_products', JSON.stringify(inventory));
+          searchProducts(); // refresh table with current search
+        } catch(e) {
+          inventory = original;
+          alert("Storage Error: Unable to delete item.");
+        }
+      }
+    }
+
+    function esc(s) {
+      return (String(s) || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // On page load
+    window.onload = function () {
+      renderTable(inventory);
+
+      // Allow searching by pressing Enter key or typing
+      document.getElementById('searchInput').addEventListener('keyup', function (e) {
+        searchProducts();
+      });
+    };
+  </script>
+</body>
+
+</html>

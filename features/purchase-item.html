@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Purchase Entry - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans',Arial,sans-serif;background:#eef2ff;color:#222;min-height:100vh}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;background:#1a237e;border-bottom:3px solid #ffeb3b}
+    .topbar .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .topbar .logo-icon{width:32px;height:32px;background:#ffeb3b;color:#1a237e;font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .topbar .logo-text{font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;color:#fff}
+    .topbar .logo-text .accent{color:#ffeb3b}
+    .topbar h1{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:#c5cae9}
+
+    .tabs{display:flex;background:#fff;border-bottom:2px solid #e0e0e0;padding:0 24px}
+    .tab-btn{padding:13px 22px;border:none;background:none;font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:#666;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .2s}
+    .tab-btn.active{color:#1a237e;border-bottom-color:#ffeb3b}
+    .tab-btn:hover{color:#1a237e}
+    .tab-panel{display:none}.tab-panel.active{display:block}
+
+    .container{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+    .section-title{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#1a237e;border-left:4px solid #ffeb3b;padding-left:10px;margin:22px 0 14px}
+    .section-title .badge{display:inline-block;background:#ffeb3b;color:#1a237e;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle}
+    .card{background:#fff;border:1.5px solid #c5cae9;border-radius:12px;padding:20px;margin-bottom:18px}
+
+    .form-row{display:grid;gap:14px;margin-bottom:14px}
+    .form-row.c4{grid-template-columns:repeat(4,1fr)}
+    .form-row.c3{grid-template-columns:repeat(3,1fr)}
+    .form-row.c2{grid-template-columns:repeat(2,1fr)}
+    .form-row.c1{grid-template-columns:1fr}
+    .fg label{display:block;font-size:11px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+    .fg input,.fg select,.fg textarea{width:100%;border:1.5px solid #c5cae9;border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Noto Sans',sans-serif;background:#fafbff;outline:none;transition:border .2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#1a237e;background:#fff}
+    .fg textarea{resize:vertical;min-height:60px}
+
+    .items-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
+    .items-tbl th{background:#1a237e;color:#fff;padding:9px 8px;text-align:left;font-size:11px;font-weight:600}
+    .items-tbl td{padding:7px 8px;border-bottom:1px solid #e8eaf6}
+    .items-tbl input,.items-tbl select{border:1px solid #c5cae9;border-radius:6px;padding:7px;font-size:12px;background:#fafbff;font-family:'Noto Sans',sans-serif;outline:none}
+    .items-tbl input:focus,.items-tbl select:focus{border-color:#1a237e}
+    .items-tbl .desc-in{width:100%;min-width:120px}
+    .items-tbl .sm-in{width:55px;text-align:center}
+    .items-tbl .md-in{width:80px}
+    .amt-cell{font-weight:700;color:#1a237e;white-space:nowrap}
+    .rm-btn{background:none;border:none;color:#f44336;font-size:17px;cursor:pointer;padding:2px}
+    .rm-btn:hover{color:#d32f2f}
+
+    .btn-add-row{background:#fff;border:1.5px dashed #c5cae9;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;color:#1a237e;cursor:pointer;font-family:'Baloo 2',cursive}
+    .btn-add-row:hover{background:#e8eaf6;border-color:#1a237e}
+
+    .totals-wrap{display:flex;justify-content:flex-end;margin-top:12px}
+    .totals{min-width:260px;border:1.5px solid #c5cae9;border-radius:8px;overflow:hidden}
+    .tot-row{display:flex;justify-content:space-between;padding:7px 12px;font-size:12px;border-bottom:1px solid #e8eaf6}
+    .tot-row:last-child{background:#1a237e;color:#fff;font-weight:700;font-size:13px;border:none}
+    .tot-row:last-child .tot-val{color:#ffeb3b}
+
+    .btn-bar{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+    .btn{padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',cursive;border:none;transition:all .2s}
+    .btn-navy{background:#1a237e;color:#fff}.btn-navy:hover{background:#283593}
+    .btn-green{background:#2e7d32;color:#fff}.btn-green:hover{background:#1b5e20}
+    .btn-outline{background:#fff;color:#1a237e;border:2px solid #1a237e}.btn-outline:hover{background:#e8eaf6}
+
+    .summary-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+    .s-card{background:#fff;border:1.5px solid #c5cae9;border-radius:12px;padding:16px;text-align:center}
+    .s-card .s-val{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:#1a237e}
+    .s-card .s-lbl{font-size:11px;color:#777;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+    .po-item{background:#fff;border:1.5px solid #c5cae9;border-radius:10px;padding:14px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;transition:all .15s}
+    .po-item:hover{border-color:#7986cb;box-shadow:0 4px 14px rgba(26,35,126,.08)}
+    .po-id{font-weight:700;color:#1a237e;font-size:13px}
+    .po-meta{font-size:11px;color:#777;margin-top:2px}
+    .po-right{text-align:right}
+    .po-amt{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:#1a237e}
+    .po-status{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block;margin-top:3px}
+    .po-status.paid{background:#e8f5e9;color:#2e7d32}
+    .po-status.unpaid{background:#fff3e0;color:#e65100}
+    .po-status.partial{background:#e3f2fd;color:#1565c0}
+    .po-del{background:none;border:none;color:#f44336;font-size:11px;cursor:pointer;margin-top:4px}
+
+    .empty-state{text-align:center;padding:30px;color:#999;font-size:13px}
+    .msg-box{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:bold;margin-bottom:14px;display:none}
+    .msg-box.success{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;display:block}
+    .msg-box.error{background:#ffebee;color:#c62828;border:1px solid #ef9a9a;display:block}
+
+    .footer{background:#0d1142;color:#c5cae9;text-align:center;padding:16px;font-size:12px;margin-top:30px;border-top:2px solid rgba(255,235,59,.15)}
+    .footer b{color:#ffeb3b}
+
+    @media(max-width:700px){.form-row.c4,.form-row.c3{grid-template-columns:1fr 1fr}.summary-cards{grid-template-columns:1fr}}
+    @media(max-width:480px){.form-row.c4,.form-row.c3,.form-row.c2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="features.html" class="logo">
+    <div class="logo-icon">U</div><span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+  </a>
+  <h1>Purchase Entry</h1>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('entry')">🛒 New Purchase</button>
+  <button class="tab-btn" onclick="switchTab('orders')">📋 Purchase Orders</button>
+</div>
+
+<!-- NEW PURCHASE TAB -->
+<div class="tab-panel active" id="tab-entry">
+<div class="container">
+  <div id="msg-box" class="msg-box"></div>
+
+  <!-- Purchase Details -->
+  <div class="section-title">📋 Purchase Details <span class="badge">PURCHASE VOUCHER</span></div>
+  <div class="card">
+    <div class="form-row c4">
+      <div class="fg"><label>Purchase Order No.</label><input type="text" id="po-no" readonly/></div>
+      <div class="fg"><label>Purchase Date</label><input type="date" id="po-date"/></div>
+      <div class="fg"><label>Due Date</label><input type="date" id="po-due"/></div>
+      <div class="fg"><label>Payment Mode</label>
+        <select id="po-paymode"><option>Bank Transfer</option><option>Cash</option><option>UPI</option><option>Cheque</option><option>Credit</option></select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Supplier Details -->
+  <div class="section-title">🏭 Supplier Details</div>
+  <div class="card">
+    <div class="form-row c3">
+      <div class="fg"><label>Supplier / Vendor Name *</label><input type="text" id="po-supp" placeholder="e.g. ABC Traders"/></div>
+      <div class="fg"><label>Supplier GST No.</label><input type="text" id="po-gst" placeholder="22AAAAA0000A1Z5"/></div>
+      <div class="fg"><label>Phone</label><input type="text" id="po-phone" placeholder="+91 99999 88888"/></div>
+    </div>
+    <div class="form-row c1">
+      <div class="fg"><label>Supplier Address</label><textarea id="po-addr" placeholder="Full address with pincode..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- Items -->
+  <div class="section-title">📦 Items / Goods Purchased</div>
+  <div class="card">
+    <table class="items-tbl">
+      <thead><tr><th>#</th><th>Item Description</th><th>HSN/SAC</th><th>Qty</th><th>Rate (₹)</th><th>Disc %</th><th>GST %</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="po-rows"></tbody>
+    </table>
+    <button class="btn-add-row" onclick="addRow()">+ Add Item</button>
+    <div class="totals-wrap">
+      <div class="totals">
+        <div class="tot-row"><span>Subtotal</span><span class="tot-val" id="t-sub">₹0.00</span></div>
+        <div class="tot-row"><span>Discount</span><span class="tot-val" id="t-disc">-₹0.00</span></div>
+        <div class="tot-row"><span>CGST</span><span class="tot-val" id="t-cgst">₹0.00</span></div>
+        <div class="tot-row"><span>SGST</span><span class="tot-val" id="t-sgst">₹0.00</span></div>
+        <div class="tot-row"><span>Total GST</span><span class="tot-val" id="t-tax">₹0.00</span></div>
+        <div class="tot-row"><span>Grand Total</span><span class="tot-val" id="t-grand">₹0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Payment & Notes -->
+  <div class="section-title">💳 Payment & Notes</div>
+  <div class="card">
+    <div class="form-row c3">
+      <div class="fg"><label>Amount Paid (₹)</label><input type="number" id="po-paid" placeholder="0.00" min="0" step="0.01" value="0"/></div>
+      <div class="fg"><label>Payment Status</label>
+        <select id="po-status"><option value="unpaid">Unpaid</option><option value="partial">Partially Paid</option><option value="paid">Fully Paid</option></select>
+      </div>
+      <div class="fg"><label>Reference / Challan No.</label><input type="text" id="po-ref" placeholder="Optional"/></div>
+    </div>
+    <div class="form-row c1">
+      <div class="fg"><label>Notes / Terms</label><textarea id="po-notes" placeholder="Payment terms, delivery notes..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-green" onclick="savePO()">💾 Save Purchase</button>
+    <button class="btn btn-navy" onclick="savePO();setTimeout(function(){switchTab('orders')},500)">💾 Save & View Orders</button>
+    <button class="btn btn-outline" onclick="clearForm()">🗑 Clear Form</button>
+  </div>
+</div>
+</div>
+
+<!-- ORDERS TAB -->
+<div class="tab-panel" id="tab-orders">
+<div class="container">
+  <div class="summary-cards">
+    <div class="s-card"><div class="s-val" id="sum-total">₹0</div><div class="s-lbl">Total Purchases</div></div>
+    <div class="s-card"><div class="s-val" id="sum-count">0</div><div class="s-lbl">Purchase Orders</div></div>
+    <div class="s-card"><div class="s-val" id="sum-due">₹0</div><div class="s-lbl">Pending Dues</div></div>
+  </div>
+  <div class="section-title">📋 All Purchase Orders</div>
+  <div class="form-row c2" style="margin-bottom:16px">
+    <div class="fg"><label>Filter</label>
+      <select id="f-status" onchange="renderOrders()"><option value="all">All</option><option value="paid">Paid</option><option value="unpaid">Unpaid</option><option value="partial">Partial</option></select>
+    </div>
+    <div class="fg"><label>Search</label><input type="text" id="f-search" placeholder="Supplier, PO number..." oninput="renderOrders()"/></div>
+  </div>
+  <div id="orders-list"></div>
+</div>
+</div>
+
+<div class="footer">&copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with &#10084; for Indian Businesses</div>
+
+<script>
+var purchases=JSON.parse(localStorage.getItem('udhyog_purchases')||'[]');
+var rc=0;
+function fmt(n){return Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2})}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function showMsg(t,type){var e=document.getElementById('msg-box');e.textContent=t;e.className='msg-box '+type;setTimeout(function(){e.className='msg-box'},3500)}
+
+window.onload=function(){
+  document.getElementById('po-no').value='PO-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('po-date').value=new Date().toISOString().split('T')[0];
+  var d=new Date();d.setDate(d.getDate()+30);
+  document.getElementById('po-due').value=d.toISOString().split('T')[0];
+  addRow();renderOrders();
+};
+
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  if(t==='entry'){document.querySelector('.tab-btn:nth-child(1)').classList.add('active');document.getElementById('tab-entry').classList.add('active')}
+  else{document.querySelector('.tab-btn:nth-child(2)').classList.add('active');document.getElementById('tab-orders').classList.add('active');renderOrders()}
+}
+
+function addRow(){
+  rc++;var tr=document.createElement('tr');tr.id='r-'+rc;
+  tr.innerHTML='<td>'+rc+'</td>'+
+    '<td><input class="desc-in" type="text" placeholder="Item name" id="desc-'+rc+'"/></td>'+
+    '<td><input class="sm-in" type="text" placeholder="HSN" id="hsn-'+rc+'" style="width:70px"/></td>'+
+    '<td><input class="sm-in" type="number" value="1" min="1" id="qty-'+rc+'" oninput="calc()"/></td>'+
+    '<td><input class="md-in" type="number" value="0" min="0" step="0.01" id="rate-'+rc+'" oninput="calc()"/></td>'+
+    '<td><input class="sm-in" type="number" value="0" min="0" max="100" id="disc-'+rc+'" oninput="calc()"/></td>'+
+    '<td><select id="gst-'+rc+'" onchange="calc()"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></td>'+
+    '<td class="amt-cell" id="amt-'+rc+'">₹0.00</td>'+
+    (rc>1?'<td><button class="rm-btn" onclick="rmRow('+rc+')">&times;</button></td>':'<td></td>');
+  document.getElementById('po-rows').appendChild(tr);
+}
+function rmRow(n){var e=document.getElementById('r-'+n);if(e)e.remove();calc()}
+
+function calc(){
+  var rows=document.querySelectorAll('#po-rows tr');
+  var sub=0,totalDisc=0,tax=0;
+  rows.forEach(function(r){
+    var n=r.id.replace('r-','');
+    var q=parseFloat(document.getElementById('qty-'+n)?.value)||0;
+    var rate=parseFloat(document.getElementById('rate-'+n)?.value)||0;
+    var disc=parseFloat(document.getElementById('disc-'+n)?.value)||0;
+    var gst=parseFloat(document.getElementById('gst-'+n)?.value)||0;
+    var line=q*rate;var d=line*(disc/100);var after=line-d;var t=after*(gst/100);
+    sub+=line;totalDisc+=d;tax+=t;
+    var ae=document.getElementById('amt-'+n);if(ae)ae.textContent='₹'+fmt(after+t);
+  });
+  document.getElementById('t-sub').textContent='₹'+fmt(sub);
+  document.getElementById('t-disc').textContent='-₹'+fmt(totalDisc);
+  document.getElementById('t-cgst').textContent='₹'+fmt(tax/2);
+  document.getElementById('t-sgst').textContent='₹'+fmt(tax/2);
+  document.getElementById('t-tax').textContent='₹'+fmt(tax);
+  document.getElementById('t-grand').textContent='₹'+fmt(sub-totalDisc+tax);
+}
+
+function getItems(){
+  var items=[];
+  document.querySelectorAll('#po-rows tr').forEach(function(r){
+    var n=r.id.replace('r-','');
+    var desc=(document.getElementById('desc-'+n)?.value||'').trim();
+    var hsn=(document.getElementById('hsn-'+n)?.value||'').trim();
+    var qty=parseFloat(document.getElementById('qty-'+n)?.value)||0;
+    var rate=parseFloat(document.getElementById('rate-'+n)?.value)||0;
+    var disc=parseFloat(document.getElementById('disc-'+n)?.value)||0;
+    var gst=parseFloat(document.getElementById('gst-'+n)?.value)||0;
+    if(desc&&qty&&rate){var line=qty*rate;var d=line*(disc/100);var after=line-d;var t=after*(gst/100);
+      items.push({desc:desc,hsn:hsn,qty:qty,rate:rate,disc:disc,gst:gst,amount:after+t})}
+  });return items;
+}
+
+function savePO(){
+  var supp=document.getElementById('po-supp').value.trim();
+  if(!supp){showMsg('Please enter Supplier Name!','error');return}
+  var items=getItems();
+  if(!items.length){showMsg('Add at least one item!','error');return}
+  var total=items.reduce(function(s,i){return s+i.amount},0);
+  var paid=parseFloat(document.getElementById('po-paid').value)||0;
+  var entry={id:Date.now(),poNo:document.getElementById('po-no').value,date:document.getElementById('po-date').value,
+    dueDate:document.getElementById('po-due').value,payMode:document.getElementById('po-paymode').value,
+    supplier:supp,supplierGst:document.getElementById('po-gst').value.trim(),phone:document.getElementById('po-phone').value.trim(),
+    address:document.getElementById('po-addr').value.trim(),items:items,total:total,paid:paid,
+    status:document.getElementById('po-status').value,ref:document.getElementById('po-ref').value.trim(),
+    notes:document.getElementById('po-notes').value.trim(),createdAt:new Date().toLocaleString()};
+  purchases.unshift(entry);
+  try {
+    localStorage.setItem('udhyog_purchases',JSON.stringify(purchases));
+    showMsg('Purchase '+entry.poNo+' saved successfully! ✔','success');clearForm();
+  } catch (e) {
+    purchases.shift();
+    showMsg('Storage Error: Unable to save purchase order.','error');
+  }
+}
+
+function clearForm(){
+  document.getElementById('po-no').value='PO-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('po-supp').value='';document.getElementById('po-gst').value='';
+  document.getElementById('po-phone').value='';document.getElementById('po-addr').value='';
+  document.getElementById('po-paid').value='0';document.getElementById('po-ref').value='';
+  document.getElementById('po-notes').value='';document.getElementById('po-status').value='unpaid';
+  document.getElementById('po-rows').innerHTML='';rc=0;addRow();calc();
+}
+
+function delPO(id){
+  var original = purchases;
+  purchases=purchases.filter(function(p){return p.id!==id});
+  try {
+    localStorage.setItem('udhyog_purchases',JSON.stringify(purchases));
+    renderOrders();
+  } catch(e) {
+    purchases = original;
+    alert('Storage Error: Unable to delete purchase order.');
+  }
+}
+
+function renderOrders(){
+  var f=document.getElementById('f-status').value;
+  var s=(document.getElementById('f-search').value||'').toLowerCase();
+  var list=purchases.filter(function(p){
+    if(f!=='all'&&p.status!==f)return false;
+    if(s&&p.supplier.toLowerCase().indexOf(s)===-1&&p.poNo.toLowerCase().indexOf(s)===-1)return false;
+    return true;
+  });
+  var totalAmt=0,totalDue=0;
+  purchases.forEach(function(p){totalAmt+=p.total;totalDue+=(p.total-(p.paid||0))});
+  document.getElementById('sum-total').textContent='₹'+fmt(totalAmt);
+  document.getElementById('sum-count').textContent=purchases.length;
+  document.getElementById('sum-due').textContent='₹'+fmt(Math.max(0,totalDue));
+
+  var el=document.getElementById('orders-list');
+  if(!list.length){el.innerHTML='<div class="empty-state">No purchase orders found.</div>';return}
+  el.innerHTML=list.map(function(p){
+    var due=p.total-(p.paid||0);
+    return '<div class="po-item"><div>'+
+      '<div class="po-id">'+esc(p.poNo)+' &bull; '+esc(p.supplier)+'</div>'+
+      '<div class="po-meta">'+p.date+' &bull; Items: '+p.items.length+' &bull; '+p.payMode+(p.ref?' &bull; Ref: '+esc(p.ref):'')+'</div>'+
+      '</div><div class="po-right">'+
+      '<div class="po-amt">₹'+fmt(p.total)+'</div>'+
+      '<span class="po-status '+p.status+'">'+(p.status==='paid'?'✔ PAID':p.status==='partial'?'◐ PARTIAL':'○ UNPAID')+'</span>'+
+      (due>0?'<div class="po-meta" style="color:#c62828">Due: ₹'+fmt(due)+'</div>':'')+
+      '<br><button class="po-del" onclick="delPO('+p.id+')">✕ Delete</button>'+
+      '</div></div>';
+  }).join('');
+}
+</script>
+</body>
+</html>

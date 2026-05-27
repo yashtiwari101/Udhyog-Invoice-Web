@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <title>Udhyog Invoice - Smart Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
+
+    body {
+      font-family: 'Noto Sans', Arial, sans-serif;
+      background: #eef2ff;
+      color: #222;
+      min-height: 100vh
+    }
+
+    /* NAV */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      height: 58px;
+      background: #1a237e;
+      border-bottom: 3px solid #ffeb3b
+    }
+
+    .topbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none
+    }
+
+    .topbar .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #ffeb3b;
+      color: #1a237e;
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center
+    }
+
+    .topbar .logo-text {
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 17px;
+      color: #fff
+    }
+
+    .topbar .logo-text .accent {
+      color: #ffeb3b
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: 0;
+      background: #fff;
+      border-bottom: 2px solid #e0e0e0;
+      padding: 0 24px
+    }
+
+    .tab-btn {
+      padding: 14px 24px;
+      border: none;
+      background: none;
+      font-family: 'Baloo 2', cursive;
+      font-size: 14px;
+      font-weight: 700;
+      color: #666;
+      cursor: pointer;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px
+    }
+
+    .tab-btn.active {
+      color: #1a237e;
+      border-bottom-color: #ffeb3b
+    }
+
+    .tab-btn:hover {
+      color: #1a237e
+    }
+
+    .tab-content {
+      display: none
+    }
+
+    .tab-content.active {
+      display: block
+    }
+
+    /* CONTAINER */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px 40px
+    }
+
+    /* SECTION */
+    .section-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e;
+      border-left: 4px solid #ffeb3b;
+      padding-left: 10px;
+      margin: 24px 0 14px
+    }
+
+    .card {
+      background: #fff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px
+    }
+
+    /* FORM GRID */
+    .form-row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px
+    }
+
+    .form-row.c4 {
+      grid-template-columns: repeat(4, 1fr)
+    }
+
+    .form-row.c3 {
+      grid-template-columns: repeat(3, 1fr)
+    }
+
+    .form-row.c1 {
+      grid-template-columns: 1fr
+    }
+
+    .fg label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 5px
+    }
+
+    .fg input,
+    .fg select,
+    .fg textarea {
+      width: 100%;
+      border: 1.5px solid #c5cae9;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: 'Noto Sans', sans-serif;
+      background: #fafbff;
+      outline: none;
+      transition: border .2s
+    }
+
+    .fg input:focus,
+    .fg select:focus,
+    .fg textarea:focus {
+      border-color: #1a237e;
+      background: #fff
+    }
+
+    .fg textarea {
+      resize: vertical;
+      min-height: 70px
+    }
+
+    /* ITEMS TABLE */
+    .items-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-bottom: 14px
+    }
+
+    .items-table th {
+      background: #1a237e;
+      color: #fff;
+      padding: 10px 8px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600
+    }
+
+    .items-table td {
+      padding: 8px;
+      border-bottom: 1px solid #e8eaf6
+    }
+
+    .items-table input,
+    .items-table select {
+      border: 1px solid #c5cae9;
+      border-radius: 6px;
+      padding: 8px;
+      font-size: 13px;
+      background: #fafbff;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none
+    }
+
+    .items-table input:focus,
+    .items-table select:focus {
+      border-color: #1a237e
+    }
+
+    .items-table .desc-input {
+      width: 100%;
+      min-width: 160px
+    }
+
+    .items-table .sm-input {
+      width: 60px;
+      text-align: center
+    }
+
+    .items-table .md-input {
+      width: 90px
+    }
+
+    .amt-cell {
+      font-weight: 700;
+      color: #1a237e;
+      white-space: nowrap
+    }
+
+    .remove-row {
+      background: none;
+      border: none;
+      color: #f44336;
+      font-size: 18px;
+      cursor: pointer;
+      padding: 4px
+    }
+
+    .remove-row:hover {
+      color: #d32f2f
+    }
+
+    /* ADD ITEM */
+    .btn-add-item {
+      background: #fff;
+      border: 1.5px dashed #c5cae9;
+      border-radius: 8px;
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #1a237e;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive
+    }
+
+    .btn-add-item:hover {
+      background: #e8eaf6;
+      border-color: #1a237e
+    }
+
+    /* TOTALS */
+    .totals-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 14px
+    }
+
+    .totals {
+      min-width: 260px;
+      border: 1.5px solid #c5cae9;
+      border-radius: 8px;
+      overflow: hidden
+    }
+
+    .tot-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 14px;
+      font-size: 13px;
+      border-bottom: 1px solid #e8eaf6
+    }
+
+    .tot-row:last-child {
+      background: #1a237e;
+      color: #fff;
+      font-weight: 700;
+      font-size: 14px;
+      border: none
+    }
+
+    .tot-row:last-child .tot-val {
+      color: #ffeb3b
+    }
+
+    /* NOTES */
+    .check-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      font-size: 13px
+    }
+
+    .check-row input {
+      width: 16px;
+      height: 16px
+    }
+
+    /* BOTTOM BTNS */
+    .bottom-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap
+    }
+
+    .btn {
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive;
+      border: none;
+      transition: all .2s
+    }
+
+    .btn-navy {
+      background: #1a237e;
+      color: #fff
+    }
+
+    .btn-navy:hover {
+      background: #283593
+    }
+
+    .btn-green {
+      background: #2e7d32;
+      color: #fff
+    }
+
+    .btn-green:hover {
+      background: #1b5e20
+    }
+
+    .btn-outline {
+      background: #fff;
+      color: #1a237e;
+      border: 2px solid #1a237e
+    }
+
+    .btn-outline:hover {
+      background: #e8eaf6
+    }
+
+    /* FOOTER */
+    .footer {
+      background: #0d1142;
+      color: #c5cae9;
+      text-align: center;
+      padding: 16px;
+      font-size: 12px;
+      margin-top: 40px
+    }
+
+    .footer b {
+      color: #ffeb3b
+    }
+
+    /* SAVED LIST */
+    .inv-list-item {
+      background: #fff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all .15s
+    }
+
+    .inv-list-item:hover {
+      border-color: #7986cb;
+      box-shadow: 0 4px 16px rgba(26, 35, 126, .08)
+    }
+
+    .inv-id {
+      font-weight: 700;
+      color: #1a237e;
+      font-size: 14px
+    }
+
+    .inv-cust {
+      font-size: 13px;
+      color: #555;
+      margin-top: 2px
+    }
+
+    .inv-amt {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e
+    }
+
+    .inv-date {
+      font-size: 11px;
+      color: #999;
+      margin-top: 2px
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: #999;
+      font-size: 14px
+    }
+
+    /* OVERLAY */
+    .overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, .85);
+      z-index: 999;
+      overflow-y: auto;
+      padding: 20px
+    }
+
+    .overlay.show {
+      display: block
+    }
+
+    .inv-card {
+      background: #fff;
+      color: #222;
+      border-radius: 14px;
+      padding: 24px;
+      max-width: 500px;
+      margin: 0 auto;
+      font-size: 13px
+    }
+
+    .inv-head {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 2px solid #1a237e;
+      padding-bottom: 12px;
+      margin-bottom: 14px
+    }
+
+    .inv-biz {
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a237e
+    }
+
+    .inv-lbl {
+      font-size: 20px;
+      font-weight: 700;
+      color: #1a237e;
+      text-align: right
+    }
+
+    .inv-meta {
+      font-size: 11px;
+      color: #777;
+      text-align: right
+    }
+
+    .inv-tbl {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 12px
+    }
+
+    .inv-tbl th {
+      background: #1a237e;
+      color: #fff;
+      padding: 7px 8px;
+      text-align: left;
+      font-size: 11px
+    }
+
+    .inv-tbl td {
+      padding: 6px 8px;
+      border-bottom: 1px solid #eee;
+      font-size: 12px
+    }
+
+    .inv-tots {
+      max-width: 200px;
+      margin-left: auto;
+      border: 1px solid #c5cae9;
+      border-radius: 5px;
+      overflow: hidden
+    }
+
+    .inv-tot-r {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 10px;
+      border-bottom: 1px solid #eee;
+      font-size: 12px
+    }
+
+    .inv-tot-r:last-child {
+      background: #1a237e;
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      border: none
+    }
+
+    .inv-foot {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 11px;
+      color: #bbb;
+      border-top: 1px dashed #ddd;
+      padding-top: 10px
+    }
+
+    .overlay-btns {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+      max-width: 500px;
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    .overlay-btns button {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-family: 'Baloo 2', cursive
+    }
+
+    @media(max-width:700px) {
+
+      .form-row.c4,
+      .form-row.c3 {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .items-table {
+        font-size: 12px
+      }
+    }
+
+    @media(max-width:480px) {
+
+      .form-row.c4,
+      .form-row.c3 {
+        grid-template-columns: 1fr
+      }
+    }
+
+    @media print {
+      body * {
+        visibility: hidden
+      }
+
+      .inv-card,
+      .inv-card * {
+        visibility: visible
+      }
+
+      .inv-card {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        border-radius: 0
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="topbar">
+    <a href="features.html" class="logo">
+      <div class="logo-icon">U</div><span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('create')">📄 Create Invoice</button>
+    <button class="tab-btn" onclick="switchTab('saved')">📁 Saved Invoices</button>
+  </div>
+
+  <!-- OVERLAY -->
+  <div class="overlay" id="overlay">
+    <div class="inv-card" id="inv-card"></div>
+    <div class="overlay-btns">
+      <button style="background:#333;color:#fff" onclick="closeOverlay()">← Close</button>
+      <button style="background:#1a237e;color:#fff" onclick="window.print()">🖨 Print</button>
+    </div>
+  </div>
+
+  <!-- CREATE TAB -->
+  <div class="tab-content active" id="tab-create">
+    <div class="container">
+
+      <div class="section-title">Invoice Details</div>
+      <div class="card">
+        <div class="form-row c4">
+          <div class="fg"><label>Invoice Number</label><input type="text" id="inv-no" readonly /></div>
+          <div class="fg"><label>Invoice Date</label><input type="date" id="inv-date" /></div>
+          <div class="fg"><label>Due Date</label><input type="date" id="due-date" /></div>
+          <div class="fg"><label>Payment Mode</label>
+            <select id="pay-mode">
+              <option>Bank Transfer</option>
+              <option>Cash</option>
+              <option>UPI</option>
+              <option>Cheque</option>
+              <option>Credit</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">From (Your Business)</div>
+      <div class="card">
+        <div class="form-row c3">
+          <div class="fg"><label>Business Name *</label><input type="text" id="biz-name"
+              placeholder="e.g. Sharma Traders" /></div>
+          <div class="fg"><label>GST Number</label><input type="text" id="biz-gst" placeholder="22AAAAA0000A1Z5" />
+          </div>
+          <div class="fg"><label>Phone</label><input type="text" id="biz-phone" placeholder="+91 98765 43210" /></div>
+        </div>
+        <div class="form-row c1">
+          <div class="fg"><label>Address</label><textarea id="biz-addr"
+              placeholder="Shop No. 12, Main Bazar, City - 000000"></textarea></div>
+        </div>
+      </div>
+
+      <div class="section-title">To (Customer Details)</div>
+      <div class="card">
+        <div class="form-row c3">
+          <div class="fg"><label>Customer Name *</label><input type="text" id="cust-name"
+              placeholder="e.g. Ramesh Kumar" /></div>
+          <div class="fg"><label>GST Number</label><input type="text" id="cust-gst" placeholder="Optional" /></div>
+          <div class="fg"><label>Phone</label><input type="text" id="cust-phone" placeholder="+91 99999 88888" /></div>
+        </div>
+        <div class="form-row c1">
+          <div class="fg"><label>Address</label><textarea id="cust-addr"
+              placeholder="Customer address here..."></textarea></div>
+        </div>
+      </div>
+
+      <div class="section-title">Items / Services</div>
+      <div class="card">
+        <table class="items-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Description</th>
+              <th>Qty</th>
+              <th>Rate (₹)</th>
+              <th>GST %</th>
+              <th>Amount (₹)</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="item-rows"></tbody>
+        </table>
+        <button class="btn-add-item" onclick="addItemRow()">+ Add Item</button>
+        <div class="totals-wrap">
+          <div class="totals">
+            <div class="tot-row"><span>Subtotal</span><span class="tot-val" id="t-sub">₹0.00</span></div>
+            <div class="tot-row" id="tr-cgst" style="display:none"><span id="tl-cgst">CGST</span><span class="tot-val"
+                id="t-cgst">₹0.00</span></div>
+            <div class="tot-row" id="tr-sgst" style="display:none"><span id="tl-sgst">SGST</span><span class="tot-val"
+                id="t-sgst">₹0.00</span></div>
+            <div class="tot-row"><span>Total GST</span><span class="tot-val" id="t-tax">₹0.00</span></div>
+            <div class="tot-row"><span>Grand Total</span><span class="tot-val" id="t-grand">₹0.00</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Notes & Status</div>
+      <div class="card">
+        <div class="fg"><label>Notes / Terms</label><textarea id="inv-notes"
+            placeholder="Thank you for your business!"></textarea></div>
+        <div class="check-row"><input type="checkbox" id="mark-paid" /><label for="mark-paid">Mark as PAID</label></div>
+      </div>
+
+      <div class="bottom-btns">
+        <button class="btn btn-navy" onclick="previewInvoice()">👁 Preview Invoice</button>
+        <button class="btn btn-green" onclick="generateInvoice()">💾 Save Invoice</button>
+        <button class="btn btn-outline" onclick="previewInvoice();setTimeout(function(){window.print()},500)">🖨
+          Print</button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- SAVED TAB -->
+  <div class="tab-content" id="tab-saved">
+    <div class="container">
+      <div class="section-title">Saved Invoices</div>
+      <div id="saved-list"></div>
+    </div>
+  </div>
+
+  <div class="footer">&copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with ❤ for Indian Businesses | Enjoy your vibe with
+    Udhyog Invoice</div>
+
+  <script>
+    var products = JSON.parse(localStorage.getItem('udhyog_products') || '[]');
+    var rowCount = 0;
+    function fmt(n) { return Number(n || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 }) }
+    function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;') }
+
+    window.onload = function () {
+      document.getElementById('inv-no').value = 'UI-' + Math.floor(Math.random() * 90000 + 10000);
+      document.getElementById('inv-date').value = new Date().toISOString().split('T')[0];
+      var b = localStorage.getItem('udhyog_user') || '';
+      if (b) document.getElementById('biz-name').value = b;
+      addItemRow();
+      renderSaved();
+    };
+
+    function switchTab(t) {
+      document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active') });
+      document.querySelectorAll('.tab-content').forEach(function (c) { c.classList.remove('active') });
+      if (t === 'create') { document.querySelector('.tab-btn:nth-child(1)').classList.add('active'); document.getElementById('tab-create').classList.add('active') }
+      else { document.querySelector('.tab-btn:nth-child(2)').classList.add('active'); document.getElementById('tab-saved').classList.add('active'); renderSaved() }
+    }
+
+    function addItemRow() {
+      rowCount++;
+      var tr = document.createElement('tr'); tr.id = 'irow-' + rowCount;
+      tr.innerHTML = '<td>' + rowCount + '</td>' +
+        '<td><input class="desc-input" type="text" placeholder="Item name / service" id="desc-' + rowCount + '"/></td>' +
+        '<td><input class="sm-input" type="number" value="1" min="1" id="qty-' + rowCount + '" oninput="calcTotals()"/></td>' +
+        '<td><input class="md-input" type="number" value="0" step="0.01" min="0" id="rate-' + rowCount + '" oninput="calcTotals()"/></td>' +
+        '<td><select id="gst-' + rowCount + '" onchange="calcTotals()"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></td>' +
+        '<td class="amt-cell" id="amt-' + rowCount + '">₹0.00</td>' +
+        (rowCount > 1 ? '<td><button class="remove-row" onclick="removeRow(' + rowCount + ')">&times;</button></td>' : '<td></td>');
+      document.getElementById('item-rows').appendChild(tr);
+    }
+    function removeRow(n) { var el = document.getElementById('irow-' + n); if (el) el.remove(); calcTotals() }
+
+    function calcTotals() {
+      var rows = document.querySelectorAll('#item-rows tr');
+      var sub = 0, tax = 0;
+      var slabs = {};
+      rows.forEach(function (r) {
+        var n = r.id.replace('irow-', '');
+        var q = parseFloat(document.getElementById('qty-' + n)?.value) || 0;
+        var rate = parseFloat(document.getElementById('rate-' + n)?.value) || 0;
+        var gst = parseFloat(document.getElementById('gst-' + n)?.value) || 0;
+        var lineTotal = q * rate;
+        var lineTax = lineTotal * (gst / 100);
+        sub += lineTotal; tax += lineTax;
+        if (gst > 0) { slabs[gst] = (slabs[gst] || 0) + lineTax; }
+        var amtEl = document.getElementById('amt-' + n);
+        if (amtEl) amtEl.textContent = '₹' + fmt(lineTotal + lineTax);
+      });
+      document.getElementById('t-sub').textContent = '₹' + fmt(sub);
+      var cgst = tax / 2, sgst = tax / 2;
+      var cgstLabel = 'CGST', sgstLabel = 'SGST';
+      var slabKeys = Object.keys(slabs);
+      if (slabKeys.length === 1) {
+        var s = slabKeys[0];
+        cgstLabel = 'CGST (' + (s / 2) + '%)';
+        sgstLabel = 'SGST (' + (s / 2) + '%)';
+      } else if (slabKeys.length > 1) {
+        cgstLabel = 'CGST (mixed)';
+        sgstLabel = 'SGST (mixed)';
+      }
+      var show = tax > 0;
+      document.getElementById('tr-cgst').style.display = show ? '' : 'none';
+      document.getElementById('tr-sgst').style.display = show ? '' : 'none';
+      document.getElementById('tl-cgst').textContent = cgstLabel;
+      document.getElementById('tl-sgst').textContent = sgstLabel;
+      document.getElementById('t-cgst').textContent = '₹' + fmt(cgst);
+      document.getElementById('t-sgst').textContent = '₹' + fmt(sgst);
+      document.getElementById('t-tax').textContent = '₹' + fmt(tax);
+      document.getElementById('t-grand').textContent = '₹' + fmt(sub + tax);
+    }
+
+    function collectData() {
+      var items = [];
+      document.querySelectorAll('#item-rows tr').forEach(function (r) {
+        var n = r.id.replace('irow-', '');
+        var desc = document.getElementById('desc-' + n)?.value?.trim() || '';
+        var q = parseFloat(document.getElementById('qty-' + n)?.value) || 0;
+        var rate = parseFloat(document.getElementById('rate-' + n)?.value) || 0;
+        var gst = parseFloat(document.getElementById('gst-' + n)?.value) || 0;
+        if (desc && rate > 0) items.push({ name: desc, qty: q, price: rate, gst: gst, total: q * rate * (1 + gst / 100) });
+      });
+      return {
+        invNo: document.getElementById('inv-no').value,
+        invDate: document.getElementById('inv-date').value,
+        dueDate: document.getElementById('due-date').value,
+        payMode: document.getElementById('pay-mode').value,
+        bizName: document.getElementById('biz-name').value.trim(),
+        bizGst: document.getElementById('biz-gst').value.trim(),
+        bizPhone: document.getElementById('biz-phone').value.trim(),
+        bizAddr: document.getElementById('biz-addr').value.trim(),
+        custName: document.getElementById('cust-name').value.trim(),
+        custGst: document.getElementById('cust-gst').value.trim(),
+        custPhone: document.getElementById('cust-phone').value.trim(),
+        custAddr: document.getElementById('cust-addr').value.trim(),
+        notes: document.getElementById('inv-notes').value.trim(),
+        paid: document.getElementById('mark-paid').checked,
+        items: items
+      };
+    }
+
+    function buildHTML(d) {
+      var sub = d.items.reduce(function (s, i) { return s + i.qty * i.price }, 0);
+      var tax = d.items.reduce(function (s, i) { return s + i.qty * i.price * (i.gst / 100) }, 0);
+      var grand = sub + tax;
+      var slabs = {};
+      d.items.forEach(function (it) { if (it.gst > 0) slabs[it.gst] = true; });
+      var slabKeys = Object.keys(slabs);
+      var cgstLbl = 'CGST', sgstLbl = 'SGST';
+      if (slabKeys.length === 1) {
+        cgstLbl = 'CGST (' + (slabKeys[0] / 2) + '%)';
+        sgstLbl = 'SGST (' + (slabKeys[0] / 2) + '%)';
+      } else if (slabKeys.length > 1) {
+        cgstLbl = 'CGST (mixed)';
+        sgstLbl = 'SGST (mixed)';
+      }
+      var rows = d.items.map(function (it, i) { return '<tr><td>' + (i + 1) + '</td><td>' + esc(it.name) + '</td><td>' + it.qty + '</td><td>₹' + fmt(it.price) + '</td><td>₹' + fmt(it.qty * it.price) + '</td></tr>' }).join('');
+      return '<div class="inv-head"><div><div class="inv-biz">🏭 ' + esc(d.bizName || 'Business') + '</div><div style="font-size:11px;color:#777">' + esc(d.bizAddr) + '</div>' + (d.bizGst ? '<div style="font-size:11px;color:#777">GST: ' + esc(d.bizGst) + '</div>' : '') + '</div><div><div class="inv-lbl">INVOICE</div><div class="inv-meta">No: ' + esc(d.invNo) + '</div><div class="inv-meta">Date: ' + d.invDate + '</div>' + (d.dueDate ? '<div class="inv-meta">Due: ' + d.dueDate + '</div>' : '') + '</div></div>' +
+        '<div style="margin-bottom:14px"><h4 style="font-size:10px;text-transform:uppercase;color:#999;margin-bottom:3px">Bill To</h4><p style="font-size:14px;font-weight:700">' + esc(d.custName) + '</p>' + (d.custAddr ? '<p style="font-size:12px;color:#666">' + esc(d.custAddr) + '</p>' : '') + (d.custGst ? '<p style="font-size:11px;color:#777">GST: ' + esc(d.custGst) + '</p>' : '') + '</div>' +
+        '<table class="inv-tbl"><thead><tr><th>#</th><th>Item</th><th>Qty</th><th>Rate</th><th>Amount</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+        '<div class="inv-tots"><div class="inv-tot-r"><span>Subtotal</span><span>₹' + fmt(sub) + '</span></div><div class="inv-tot-r"><span>' + cgstLbl + '</span><span>₹' + fmt(tax / 2) + '</span></div><div class="inv-tot-r"><span>' + sgstLbl + '</span><span>₹' + fmt(tax / 2) + '</span></div><div class="inv-tot-r"><span>Total GST</span><span>₹' + fmt(tax) + '</span></div><div class="inv-tot-r"><span>Grand Total</span><span>₹' + fmt(grand) + '</span></div></div>' +
+        (d.notes ? '<div style="margin-top:12px;font-size:12px;color:#666"><b>Notes:</b> ' + esc(d.notes) + '</div>' : '') +
+        (d.paid ? '<div style="margin-top:8px;font-size:12px;color:#2e7d32;font-weight:700">✅ PAID</div>' : '') +
+        '<div class="inv-foot">Generated by <b>Udhyog Invoice</b> — Thank you!</div>';
+    }
+
+    function previewInvoice() {
+      var d = collectData();
+      if (!d.custName) { alert('Please enter Customer Name!'); return }
+      if (d.items.length === 0) { alert('Please add at least one item!'); return }
+      document.getElementById('inv-card').innerHTML = buildHTML(d);
+      document.getElementById('overlay').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeOverlay() { document.getElementById('overlay').classList.remove('show'); document.body.style.overflow = '' }
+
+    function generateInvoice() {
+      var d = collectData();
+      if (!d.custName) { alert('Please enter Customer Name!'); return }
+      if (d.items.length === 0) { alert('Add at least one item!'); return }
+      var invoices = JSON.parse(localStorage.getItem('udhyog_invoices') || '[]');
+      var sub = d.items.reduce(function (s, i) { return s + i.qty * i.price }, 0);
+      var tax = d.items.reduce(function (s, i) { return s + i.qty * i.price * (i.gst / 100) }, 0);
+      invoices.unshift({ id: d.invNo, customer: d.custName, date: d.invDate, notes: d.notes, items: d.items, total: sub + tax, paid: d.paid, at: new Date().toLocaleString() });
+      try {
+        localStorage.setItem('udhyog_invoices', JSON.stringify(invoices));
+        alert('Invoice saved successfully! ✔');
+        document.getElementById('inv-no').value = 'UI-' + Math.floor(Math.random() * 90000 + 10000);
+      } catch (e) {
+        alert('Storage Error: Unable to save invoice. Storage might be full.');
+      }
+    }
+
+    function renderSaved() {
+      var invoices = JSON.parse(localStorage.getItem('udhyog_invoices') || '[]');
+      var el = document.getElementById('saved-list');
+      if (!invoices.length) { el.innerHTML = '<div class="empty-state">📄 No saved invoices yet.</div>'; return }
+      el.innerHTML = invoices.map(function (inv, i) {
+        return '<div class="inv-list-item" onclick="viewSaved(' + i + ')"><div><div class="inv-id">' + esc(inv.id) + '</div><div class="inv-cust">' + esc(inv.customer) + '</div><div class="inv-date">' + inv.date + '</div></div><div style="text-align:right"><div class="inv-amt">₹' + fmt(inv.total) + '</div>' + (inv.paid ? '<div style="font-size:11px;color:#2e7d32">✅ Paid</div>' : '') + '</div></div>'
+      }).join('');
+    }
+    function viewSaved(i) {
+      var invoices = JSON.parse(localStorage.getItem('udhyog_invoices') || '[]');
+      var inv = invoices[i]; if (!inv) return;
+      var d = { invNo: inv.id, invDate: inv.date, dueDate: '', payMode: '', bizName: localStorage.getItem('udhyog_user') || 'Business', bizGst: '', bizPhone: '', bizAddr: '', custName: inv.customer, custGst: '', custPhone: '', custAddr: '', notes: inv.notes || '', paid: inv.paid || false, items: inv.items || [] };
+      document.getElementById('inv-card').innerHTML = buildHTML(d);
+      document.getElementById('overlay').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sell Summary - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans', Arial, sans-serif;
+      background: #eef2ff;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 18px; height: 58px;
+      background: #1a237e; border-bottom: 3px solid #ffeb3b;
+    }
+    .topbar .logo { display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .topbar .logo-icon {
+      width: 32px; height: 32px; background: #ffeb3b; color: #1a237e;
+      font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 16px;
+      border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    }
+    .topbar .logo-text { font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 17px; color: #fff; }
+    .topbar .logo-text .accent { color: #ffeb3b; }
+    .topbar h1 { font-family: 'Baloo 2', cursive; font-size: 16px; font-weight: 700; color: #c5cae9; }
+
+    /* STATS ROW - 3 boxes */
+    .stats-row {
+      display: flex;
+      gap: 12px;
+      padding: 18px 18px 28px;
+    }
+    .stat-box {
+      flex: 1;
+      background: #fff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 14px;
+      padding: 22px 10px;
+      text-align: center;
+      transition: transform .2s;
+    }
+    .stat-box:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,35,126,.08); }
+    .stat-box .stat-num {
+      font-family: 'Baloo 2', cursive;
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .stat-box .stat-num.white  { color: #1a237e; }
+    .stat-box .stat-num.blue   { color: #1a237e; }
+    .stat-box .stat-num.green  { color: #2e7d32; }
+    .stat-box .stat-label {
+      font-size: 12px;
+      color: #777;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    /* PRODUCTS BY SALES HEADER */
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 18px 16px;
+    }
+    .section-header h2 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e;
+      border-left: 4px solid #ffeb3b;
+      padding-left: 10px;
+    }
+    .section-header .sort-label {
+      font-size: 12px;
+      color: #999;
+    }
+
+    /* PRODUCT SALES LIST */
+    .sales-list {
+      padding: 0 18px;
+      flex: 1;
+    }
+
+    /* EMPTY STATE */
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: #999;
+    }
+    .empty-state .empty-icon { font-size: 40px; margin-bottom: 10px; }
+    .empty-state p { font-size: 13px; color: #777; }
+
+    /* PRODUCT SALE CARD */
+    .sale-card {
+      background: #fff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      transition: all .2s;
+    }
+    .sale-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(26,35,126,.08); border-color: #7986cb; }
+
+    /* RANK BADGE */
+    .rank-badge {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #1a237e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: bold;
+      color: #fff;
+      flex-shrink: 0;
+    }
+    .rank-badge.gold   { background: #f9a825; color: #1a237e; }
+    .rank-badge.silver { background: #78909c; }
+    .rank-badge.bronze { background: #a1887f; }
+
+    /* PRODUCT INFO */
+    .sale-info { flex: 1; }
+    .sale-info .p-name {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1a237e;
+      margin-bottom: 4px;
+    }
+    .sale-info .p-qty {
+      font-size: 12px;
+      color: #777;
+    }
+
+    /* BAR + AMOUNT */
+    .sale-right { text-align: right; min-width: 90px; }
+    .sale-right .p-revenue {
+      font-family: 'Baloo 2', cursive;
+      font-size: 15px;
+      font-weight: 700;
+      color: #2e7d32;
+      margin-bottom: 6px;
+    }
+    .bar-wrap {
+      width: 100%;
+      height: 4px;
+      background: #e8eaf6;
+      border-radius: 4px;
+      margin-top: 8px;
+    }
+    .bar-fill {
+      height: 4px;
+      background: linear-gradient(90deg, #1a237e, #ffeb3b);
+      border-radius: 4px;
+    }
+
+    /* TOTAL REVENUE BOX */
+    .revenue-box {
+      margin: 0 18px 24px;
+      background: #1a237e;
+      border-radius: 14px;
+      padding: 18px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .revenue-box .rev-label {
+      font-size: 14px;
+      color: #c5cae9;
+    }
+    .revenue-box .rev-amt {
+      font-family: 'Baloo 2', cursive;
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffeb3b;
+    }
+
+    /* HOME INDICATOR */
+    .footer {
+      background: #0d1142;
+      color: #c5cae9;
+      text-align: center;
+      padding: 16px;
+      font-size: 12px;
+      margin-top: 30px;
+      border-top: 2px solid rgba(255, 235, 59, .15);
+    }
+    .footer b { color: #ffeb3b; }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a href="features.html" class="logo">
+      <div class="logo-icon">U</div>
+      <span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+    <h1>Sell Summary</h1>
+  </div>
+
+  <!-- STATS ROW -->
+  <div class="stats-row">
+    <div class="stat-box">
+      <div class="stat-num white" id="stat-products">0</div>
+      <div class="stat-label">Products</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num blue" id="stat-customers">0</div>
+      <div class="stat-label">Customers</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num green" id="stat-invoices">0</div>
+      <div class="stat-label">Invoices</div>
+    </div>
+  </div>
+
+  <!-- TOTAL REVENUE -->
+  <div class="revenue-box" id="revenue-box" style="display:none">
+    <div class="rev-label">Total Revenue</div>
+    <div class="rev-amt" id="total-revenue">&#8377;0</div>
+  </div>
+
+  <!-- PRODUCTS BY SALES -->
+  <div class="section-header">
+    <h2>Products by Sales</h2>
+    <div class="sort-label">High &#8594; Low</div>
+  </div>
+
+  <!-- SALES LIST -->
+  <div class="sales-list" id="sales-list"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">&copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with &#10084; for Indian Businesses</div>
+
+<script>
+  window.onload = function () {
+    var products  = JSON.parse(localStorage.getItem('udhyog_products')  || '[]');
+    var customers = JSON.parse(localStorage.getItem('udhyog_customers') || '[]');
+    var invoices  = JSON.parse(localStorage.getItem('udhyog_invoices')  || '[]');
+
+    // ---- STATS ----
+    document.getElementById('stat-products').textContent  = products.length;
+    document.getElementById('stat-customers').textContent = customers.length;
+    document.getElementById('stat-invoices').textContent  = invoices.length;
+
+    // ---- TOTAL REVENUE ----
+    var totalRevenue = invoices.reduce(function (s, inv) { return s + (inv.total || 0); }, 0);
+    if (invoices.length > 0) {
+      document.getElementById('revenue-box').style.display = 'flex';
+      document.getElementById('total-revenue').innerHTML =
+        '&#8377;' + Number(totalRevenue).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    }
+
+    // ---- PRODUCTS BY SALES ----
+    // tally up how many of each product was sold across all invoices
+    var salesMap = {};
+    invoices.forEach(function (inv) {
+      (inv.items || []).forEach(function (item) {
+        var key = item.name;
+        if (!salesMap[key]) {
+          salesMap[key] = { name: key, qty: 0, revenue: 0, price: item.price || 0 };
+        }
+        salesMap[key].qty     += (item.qty || 1);
+        salesMap[key].revenue += (item.total || 0);
+      });
+    });
+
+    var salesArr = Object.values(salesMap);
+    // sort high to low by revenue
+    salesArr.sort(function (a, b) { return b.revenue - a.revenue; });
+
+    var el     = document.getElementById('sales-list');
+    var maxRev = salesArr.length > 0 ? salesArr[0].revenue : 1;
+
+    if (salesArr.length === 0) {
+      el.innerHTML =
+        '<div class="empty-state">' +
+          '<div class="empty-icon">&#128202;</div>' +
+          '<p>No sales data yet.</p>' +
+          '<p style="margin-top:5px;font-size:12px;color:#2a2a2a">Generate invoices to see summary here.</p>' +
+        '</div>';
+      return;
+    }
+
+    el.innerHTML = salesArr.map(function (p, i) {
+      var pct   = Math.round((p.revenue / maxRev) * 100);
+      var badge = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+
+      return '<div class="sale-card">' +
+        '<div class="rank-badge ' + badge + '">' + (i + 1) + '</div>' +
+        '<div class="sale-info">' +
+          '<div class="p-name">' + esc(p.name) + '</div>' +
+          '<div class="p-qty">' + p.qty + ' unit' + (p.qty !== 1 ? 's' : '') + ' sold</div>' +
+          '<div class="bar-wrap"><div class="bar-fill" style="width:' + pct + '%"></div></div>' +
+        '</div>' +
+        '<div class="sale-right">' +
+          '<div class="p-revenue">&#8377;' + Number(p.revenue).toLocaleString('en-IN', { minimumFractionDigits: 0 }) + '</div>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  };
+
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+</script>
+
+</body>
+</html>

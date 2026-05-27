@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dashboard - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans', Arial, sans-serif;
+      background: #eef2ff;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* HEADER */
+    .header {
+      background: #1a237e;
+      padding: 14px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 4px solid #ffeb3b;
+    }
+
+    .header .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+
+    .header .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: #ffeb3b;
+      color: #1a237e;
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 18px;
+      border-radius: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .header .logo-text {
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 19px;
+      color: #fff;
+    }
+
+    .header .logo-text .accent {
+      color: #ffeb3b;
+    }
+
+    .header .logout-btn {
+      background: #ffeb3b;
+      color: #1a237e;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive;
+      transition: all 0.2s;
+    }
+
+    .header .logout-btn:hover {
+      background: #fdd835;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(255, 235, 59, 0.3);
+    }
+
+    /* HELLO BAR */
+    .hello-bar {
+      background: #1a237e;
+      padding: 10px 22px 18px;
+      color: white;
+    }
+
+    .hello-bar p {
+      font-family: 'Baloo 2', cursive;
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .hello-bar span {
+      font-size: 13px;
+      color: #c5cae9;
+    }
+
+    /* FEATURES SECTION */
+    .features-section {
+      padding: 24px 20px 30px;
+      flex: 1;
+    }
+
+    .features-section h2 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e;
+      border-left: 4px solid #ffeb3b;
+      padding-left: 10px;
+      margin-bottom: 18px;
+    }
+
+    /* ACTION CARDS */
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .action-card {
+      display: block;
+      background: #fff;
+      border: 2px solid #c5cae9;
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-decoration: none;
+      color: inherit;
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s ease;
+      cursor: pointer;
+    }
+
+    .action-card::before {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #1a237e, #ffeb3b);
+      transform: scaleX(0);
+      transition: transform 0.3s;
+    }
+
+    .action-card::after {
+      content: '→';
+      position: absolute;
+      top: 22px;
+      right: 18px;
+      font-size: 20px;
+      color: #c5cae9;
+      transition: all 0.25s;
+      font-weight: 700;
+    }
+
+    .action-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 14px 40px rgba(26, 35, 126, 0.14);
+      border-color: #7986cb;
+    }
+
+    .action-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .action-card:hover::after {
+      color: #1a237e;
+      right: 14px;
+    }
+
+    .action-card:active {
+      transform: scale(0.98);
+    }
+
+    .action-card.featured {
+      background: #1a237e;
+      border-color: #1a237e;
+      color: #fff;
+    }
+
+    .action-card.featured::after {
+      color: rgba(255, 235, 59, 0.4);
+    }
+
+    .action-card.featured:hover::after {
+      color: #ffeb3b;
+    }
+
+    .action-card.featured h3 {
+      color: #fff;
+    }
+
+    .action-card.featured p {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    .action-card.featured::before {
+      background: linear-gradient(90deg, #ffeb3b, #fdd835);
+    }
+
+    .action-badge {
+      display: inline-block;
+      background: #ffeb3b;
+      color: #1a237e;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 10px;
+      border-radius: 100px;
+      margin-bottom: 8px;
+      letter-spacing: 0.5px;
+    }
+
+    .action-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 14px;
+    }
+
+    .action-card h3 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 17px;
+      font-weight: 700;
+      color: #1a237e;
+      margin-bottom: 4px;
+    }
+
+    .action-card p {
+      font-size: 13px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    /* FOOTER */
+    .footer {
+      background: #0d1142;
+      color: #c5cae9;
+      text-align: center;
+      padding: 16px;
+      font-size: 12px;
+      border-top: 2px solid rgba(255, 235, 59, 0.15);
+    }
+
+    .footer b {
+      color: #ffeb3b;
+    }
+
+    @media (max-width: 600px) {
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <a href="../index.html" class="logo">
+      <div class="logo-icon">U</div>
+      <span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+    <button class="logout-btn" onclick="logout()">Logout</button>
+  </div>
+
+  <!-- HELLO -->
+  <div class="hello-bar">
+    <span id="greeting-text">Good Morning!</span>
+    <p id="hello-name">Hello, Guest &#128075;</p>
+  </div>
+
+  <!-- FEATURES -->
+  <div class="features-section">
+    <h2>Quick Actions</h2>
+    <div class="actions-grid">
+
+      <a href="add-items.html" class="action-card">
+        <div class="action-icon" style="background:#e8eaf6">📦</div>
+        <h3>Add Items</h3>
+        <p>Add new products & services to your inventory catalog.</p>
+      </a>
+
+      <a href="edit-items.html" class="action-card">
+        <div class="action-icon" style="background:#fff3e0">✏️</div>
+        <h3>Edit Items</h3>
+        <p>Update prices, stock quantities & product details.</p>
+      </a>
+
+      <a href="gr.html" class="action-card">
+        <div class="action-icon" style="background:#e8eaf6">🧾</div>
+        <h3>Generate Invoice</h3>
+        <p>Create professional GST-compliant invoices instantly.</p>
+      </a>
+
+      <a href="transaction.html" class="action-card">
+        <div class="action-icon" style="background:#e0f7fa">📋</div>
+        <h3>All Transactions</h3>
+        <p>View complete history of all your business transactions.</p>
+      </a>
+
+      <a href="add-beneficiary.html" class="action-card">
+        <div class="action-icon" style="background:#fce4ec">👥</div>
+        <h3>Add Beneficiary</h3>
+        <p>Add customers & suppliers to your contacts list.</p>
+      </a>
+
+      <a href="sell-summary.html" class="action-card">
+        <div class="action-icon" style="background:#f3e5f5">📊</div>
+        <h3>Sell Summary</h3>
+        <p>View detailed sales analytics & performance reports.</p>
+      </a>
+
+      <a href="inventory.html" class="action-card">
+        <div class="action-icon" style="background:#e8f5e9">🏬</div>
+        <h3>Inventory</h3>
+        <p>Manage stock levels, track inventory in real-time.</p>
+      </a>
+
+      <a href="purchase-item.html" class="action-card">
+        <div class="action-icon" style="background:#fff8e1">🛒</div>
+        <h3>Purchase Item</h3>
+        <p>Record purchase entries &amp; manage supplier orders.</p>
+      </a>
+
+      <a href="sales-return.html" class="action-card">
+        <div class="action-icon" style="background:#fbe9e7">🔄</div>
+        <h3>Sales & Purchase Return</h3>
+        <p>Process sales & purchase returns, refunds &amp; credit notes easily.</p>
+      </a>
+
+      <a href="account-book.html" class="action-card">
+        <div class="action-icon" style="background:#e0f2f1">📒</div>
+        <h3>Account Book</h3>
+        <p>Track income, expenses &amp; maintain financial records.</p>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    &copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with &#10084; for Indian Businesses
+  </div>
+
+  <script>
+    // Auth check
+    var user = localStorage.getItem('udhyog_user');
+    if (user) {
+      document.getElementById('hello-name').textContent = 'Hello, ' + user + ' 👋';
+    } else {
+      window.location.href = '../login/loginnew.html';
+    }
+
+    // Dynamic greeting
+    var hour = new Date().getHours();
+    var greetEl = document.getElementById('greeting-text');
+    if (hour < 12) greetEl.textContent = 'Good Morning!';
+    else if (hour < 17) greetEl.textContent = 'Good Afternoon!';
+    else greetEl.textContent = 'Good Evening!';
+
+    // Auto-calculate balance card
+    var invoices = JSON.parse(localStorage.getItem('udhyog_invoices') || '[]');
+    var customers = JSON.parse(localStorage.getItem('udhyog_customers') || '[]');
+
+    var totalRevenue = invoices.reduce(function (s, inv) { return s + (inv.total || 0); }, 0);
+    document.getElementById('bal-total').innerHTML =
+      '&#8377; ' + Number(totalRevenue).toLocaleString('en-IN', { minimumFractionDigits: 2 });
+    document.getElementById('bal-invoices').textContent = invoices.length;
+
+    var uniqueCust = new Set();
+    invoices.forEach(function (inv) { if (inv.customer) uniqueCust.add(inv.customer.toLowerCase()); });
+    document.getElementById('bal-customers').textContent = Math.max(uniqueCust.size, customers.length);
+
+    function logout() {
+      localStorage.removeItem('udhyog_user');
+      window.location.href = '../login/loginnew.html';
+    }
+  </script>
+
+</body>
+
+</html>

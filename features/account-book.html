@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Account Book - Udhyog Invoice</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans',Arial,sans-serif;background:#eef2ff;color:#222;min-height:100vh}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;background:#1a237e;border-bottom:3px solid #ffeb3b}
+    .topbar .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .topbar .logo-icon{width:32px;height:32px;background:#ffeb3b;color:#1a237e;font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .topbar .logo-text{font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;color:#fff}
+    .topbar .logo-text .accent{color:#ffeb3b}
+    .topbar h1{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:#c5cae9}
+    .tabs{display:flex;background:#fff;border-bottom:2px solid #e0e0e0;padding:0 24px}
+    .tab-btn{padding:13px 20px;border:none;background:none;font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:#666;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px}
+    .tab-btn.active{color:#1a237e;border-bottom-color:#ffeb3b}
+    .tab-btn:hover{color:#1a237e}
+    .tab-panel{display:none}.tab-panel.active{display:block}
+    .container{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+    .section-title{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#1a237e;border-left:4px solid #ffeb3b;padding-left:10px;margin:20px 0 14px}
+    .badge{display:inline-block;background:#ffeb3b;color:#1a237e;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle}
+    .card{background:#fff;border:1.5px solid #c5cae9;border-radius:12px;padding:20px;margin-bottom:18px}
+    .form-row{display:grid;gap:14px;margin-bottom:14px}
+    .form-row.c4{grid-template-columns:repeat(4,1fr)}.form-row.c3{grid-template-columns:repeat(3,1fr)}.form-row.c2{grid-template-columns:repeat(2,1fr)}.form-row.c1{grid-template-columns:1fr}
+    .fg label{display:block;font-size:11px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+    .fg input,.fg select,.fg textarea{width:100%;border:1.5px solid #c5cae9;border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Noto Sans',sans-serif;background:#fafbff;outline:none;transition:border .2s}
+    .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:#1a237e;background:#fff}
+    .fg textarea{resize:vertical;min-height:50px}
+
+    .summary-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+    .s-card{background:#fff;border:1.5px solid #c5cae9;border-radius:12px;padding:16px;text-align:center;transition:transform .2s}
+    .s-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(26,35,126,.08)}
+    .s-card .s-icon{font-size:24px;margin-bottom:4px}
+    .s-card .s-val{font-family:'Baloo 2',cursive;font-size:20px;font-weight:800;color:#1a237e}
+    .s-card .s-val.green{color:#2e7d32}.s-card .s-val.red{color:#c62828}.s-card .s-val.blue{color:#1565c0}
+    .s-card .s-lbl{font-size:10px;color:#777;text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+
+    .ledger-tbl{width:100%;border-collapse:collapse;font-size:12px}
+    .ledger-tbl th{background:#1a237e;color:#fff;padding:10px 10px;text-align:left;font-size:11px;font-weight:600;position:sticky;top:0}
+    .ledger-tbl td{padding:9px 10px;border-bottom:1px solid #e8eaf6}
+    .ledger-tbl tr:hover{background:#f5f7ff}
+    .ledger-tbl .cr{color:#2e7d32;font-weight:700}.ledger-tbl .dr{color:#c62828;font-weight:700}
+    .type-badge{font-size:10px;font-weight:700;padding:2px 8px;border-radius:12px;display:inline-block}
+    .type-badge.income{background:#e8f5e9;color:#2e7d32}
+    .type-badge.expense{background:#ffebee;color:#c62828}
+    .type-badge.purchase{background:#fff3e0;color:#e65100}
+    .type-badge.sale{background:#e3f2fd;color:#1565c0}
+    .del-btn{background:none;border:none;color:#f44336;font-size:14px;cursor:pointer}.del-btn:hover{color:#b71c1c}
+
+    .btn-bar{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+    .btn{padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',cursive;border:none;transition:all .2s}
+    .btn-green{background:#2e7d32;color:#fff}.btn-green:hover{background:#1b5e20}
+    .btn-red{background:#c62828;color:#fff}.btn-red:hover{background:#b71c1c}
+    .btn-navy{background:#1a237e;color:#fff}.btn-navy:hover{background:#283593}
+    .btn-outline{background:#fff;color:#1a237e;border:2px solid #1a237e}.btn-outline:hover{background:#e8eaf6}
+
+    .empty-state{text-align:center;padding:30px;color:#999;font-size:13px}
+    .msg-box{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:bold;margin-bottom:14px;display:none}
+    .msg-box.success{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;display:block}
+    .msg-box.error{background:#ffebee;color:#c62828;border:1px solid #ef9a9a;display:block}
+
+    .balance-bar{display:flex;align-items:center;justify-content:space-between;background:#1a237e;color:#fff;border-radius:10px;padding:14px 20px;margin-bottom:18px}
+    .balance-bar .bl{font-size:12px;color:#c5cae9}.balance-bar .bv{font-family:'Baloo 2',cursive;font-size:22px;font-weight:800;color:#ffeb3b}
+
+    .tbl-wrap{max-height:500px;overflow-y:auto;border:1.5px solid #c5cae9;border-radius:10px}
+    .footer{background:#0d1142;color:#c5cae9;text-align:center;padding:16px;font-size:12px;margin-top:30px;border-top:2px solid rgba(255,235,59,.15)}
+    .footer b{color:#ffeb3b}
+    @media(max-width:700px){.summary-row,.form-row.c4,.form-row.c3{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.summary-row,.form-row.c4,.form-row.c3,.form-row.c2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="features.html" class="logo"><div class="logo-icon">U</div><span class="logo-text">Udhyog <span class="accent">Invoice</span></span></a>
+  <h1>Account Book</h1>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('ledger')">📒 Ledger</button>
+  <button class="tab-btn" onclick="switchTab('entry')">➕ New Entry</button>
+  <button class="tab-btn" onclick="switchTab('report')">📊 Reports</button>
+</div>
+
+<!-- LEDGER TAB -->
+<div class="tab-panel active" id="tab-ledger">
+<div class="container">
+  <div class="summary-row">
+    <div class="s-card"><div class="s-icon">💰</div><div class="s-val green" id="s-income">₹0</div><div class="s-lbl">Total Income</div></div>
+    <div class="s-card"><div class="s-icon">💸</div><div class="s-val red" id="s-expense">₹0</div><div class="s-lbl">Total Expense</div></div>
+    <div class="s-card"><div class="s-icon">📊</div><div class="s-val blue" id="s-balance">₹0</div><div class="s-lbl">Net Balance</div></div>
+    <div class="s-card"><div class="s-icon">📋</div><div class="s-val" id="s-count">0</div><div class="s-lbl">Entries</div></div>
+  </div>
+
+  <div class="balance-bar">
+    <div><div class="bl">Current Balance</div><div class="bv" id="bal-display">₹0.00</div></div>
+    <div style="text-align:right"><div class="bl">As of</div><div style="font-size:13px" id="bal-date">—</div></div>
+  </div>
+
+  <div class="form-row c3" style="margin-bottom:14px">
+    <div class="fg"><label>Filter Type</label>
+      <select id="f-type" onchange="renderLedger()"><option value="all">All Entries</option><option value="income">Income Only</option><option value="expense">Expense Only</option><option value="purchase">Purchases</option><option value="sale">Sales</option></select>
+    </div>
+    <div class="fg"><label>Date Range</label>
+      <select id="f-range" onchange="renderLedger()"><option value="all">All Time</option><option value="today">Today</option><option value="week">This Week</option><option value="month">This Month</option><option value="year">This Year</option></select>
+    </div>
+    <div class="fg"><label>Search</label><input type="text" id="f-search" placeholder="Party, description..." oninput="renderLedger()"/></div>
+  </div>
+
+  <div class="tbl-wrap">
+    <table class="ledger-tbl">
+      <thead><tr><th>Date</th><th>Voucher</th><th>Type</th><th>Party / Description</th><th>Debit (₹)</th><th>Credit (₹)</th><th>Balance (₹)</th><th></th></tr></thead>
+      <tbody id="ledger-body"></tbody>
+    </table>
+  </div>
+  <div id="ledger-empty" class="empty-state" style="display:none">No entries found.</div>
+</div>
+</div>
+
+<!-- NEW ENTRY TAB -->
+<div class="tab-panel" id="tab-entry">
+<div class="container">
+  <div id="msg-box" class="msg-box"></div>
+
+  <div class="section-title">➕ New Account Entry <span class="badge">VOUCHER</span></div>
+  <div class="card">
+    <div class="form-row c4">
+      <div class="fg"><label>Voucher No.</label><input type="text" id="v-no" readonly/></div>
+      <div class="fg"><label>Date</label><input type="date" id="v-date"/></div>
+      <div class="fg"><label>Entry Type</label>
+        <select id="v-type" onchange="updateTypeUI()"><option value="income">💰 Income / Receipt</option><option value="expense">💸 Expense / Payment</option><option value="purchase">🛒 Purchase</option><option value="sale">🧾 Sale</option></select>
+      </div>
+      <div class="fg"><label>Payment Mode</label>
+        <select id="v-mode"><option>Cash</option><option>Bank Transfer</option><option>UPI</option><option>Cheque</option><option>Credit</option></select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="form-row c2">
+      <div class="fg"><label id="lbl-party">Party / Customer Name</label><input type="text" id="v-party" placeholder="e.g. Ramesh Kumar"/></div>
+      <div class="fg"><label>Amount (₹) *</label><input type="number" id="v-amount" placeholder="0.00" min="0" step="0.01"/></div>
+    </div>
+    <div class="form-row c2">
+      <div class="fg"><label>Category</label>
+        <select id="v-category"><option>General</option><option>Sales Revenue</option><option>Purchase</option><option>Salary</option><option>Rent</option><option>Utilities</option><option>Transport</option><option>Office Supplies</option><option>Marketing</option><option>Maintenance</option><option>Tax Payment</option><option>Loan / EMI</option><option>Other</option></select>
+      </div>
+      <div class="fg"><label>Reference / Invoice No.</label><input type="text" id="v-ref" placeholder="Optional"/></div>
+    </div>
+    <div class="form-row c1">
+      <div class="fg"><label>Description / Narration</label><textarea id="v-desc" placeholder="Details of the transaction..."></textarea></div>
+    </div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-green" onclick="saveEntry()">💾 Save Entry</button>
+    <button class="btn btn-navy" onclick="saveEntry();setTimeout(function(){switchTab('ledger')},400)">💾 Save & View Ledger</button>
+    <button class="btn btn-outline" onclick="clearForm()">🗑 Clear</button>
+  </div>
+</div>
+</div>
+
+<!-- REPORTS TAB -->
+<div class="tab-panel" id="tab-report">
+<div class="container">
+  <div class="section-title">📊 Financial Summary</div>
+  <div class="summary-row">
+    <div class="s-card"><div class="s-icon">📈</div><div class="s-val green" id="r-income">₹0</div><div class="s-lbl">Total Income</div></div>
+    <div class="s-card"><div class="s-icon">📉</div><div class="s-val red" id="r-expense">₹0</div><div class="s-lbl">Total Expense</div></div>
+    <div class="s-card"><div class="s-icon">🛒</div><div class="s-val" id="r-purchase">₹0</div><div class="s-lbl">Total Purchases</div></div>
+    <div class="s-card"><div class="s-icon">🧾</div><div class="s-val blue" id="r-sale">₹0</div><div class="s-lbl">Total Sales</div></div>
+  </div>
+
+  <div class="section-title">📂 Category Breakdown</div>
+  <div class="card">
+    <div class="tbl-wrap" style="max-height:none">
+      <table class="ledger-tbl">
+        <thead><tr><th>Category</th><th>Entries</th><th>Debit (₹)</th><th>Credit (₹)</th><th>Net (₹)</th></tr></thead>
+        <tbody id="cat-body"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">📅 Monthly Summary</div>
+  <div class="card">
+    <div class="tbl-wrap" style="max-height:none">
+      <table class="ledger-tbl">
+        <thead><tr><th>Month</th><th>Income (₹)</th><th>Expense (₹)</th><th>Net (₹)</th></tr></thead>
+        <tbody id="month-body"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+</div>
+
+<div class="footer">&copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with &#10084; for Indian Businesses</div>
+
+<script>
+var entries=JSON.parse(localStorage.getItem('udhyog_accounts')||'[]');
+function fmt(n){return Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2})}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function showMsg(t,type){var e=document.getElementById('msg-box');e.textContent=t;e.className='msg-box '+type;setTimeout(function(){e.className='msg-box'},3500)}
+
+window.onload=function(){initForm();renderLedger();renderReports()};
+
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  var idx={ledger:0,entry:1,report:2}[t]||0;
+  document.querySelectorAll('.tab-btn')[idx].classList.add('active');
+  document.getElementById('tab-'+t).classList.add('active');
+  if(t==='ledger')renderLedger();if(t==='report')renderReports();
+}
+
+function initForm(){
+  document.getElementById('v-no').value='VCH-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('v-date').value=new Date().toISOString().split('T')[0];
+}
+
+function updateTypeUI(){
+  var t=document.getElementById('v-type').value;
+  var lbl=document.getElementById('lbl-party');
+  if(t==='income'||t==='sale')lbl.textContent='Customer / Received From';
+  else lbl.textContent='Supplier / Paid To';
+}
+
+function saveEntry(){
+  var amount=parseFloat(document.getElementById('v-amount').value);
+  if(!amount||amount<=0){showMsg('Enter a valid amount!','error');return}
+  var party=document.getElementById('v-party').value.trim();
+  if(!party){showMsg('Enter party name!','error');return}
+  var type=document.getElementById('v-type').value;
+  var isCredit=(type==='income'||type==='sale');
+  var entry={id:Date.now(),vNo:document.getElementById('v-no').value,date:document.getElementById('v-date').value,
+    type:type,mode:document.getElementById('v-mode').value,party:party,amount:amount,
+    category:document.getElementById('v-category').value,ref:document.getElementById('v-ref').value.trim(),
+    desc:document.getElementById('v-desc').value.trim(),debit:isCredit?0:amount,credit:isCredit?amount:0,
+    createdAt:new Date().toLocaleString()};
+  entries.unshift(entry);
+  try {
+    localStorage.setItem('udhyog_accounts',JSON.stringify(entries));
+    showMsg('Entry '+entry.vNo+' saved! ✔','success');clearForm();
+  } catch (e) {
+    entries.shift();
+    showMsg('Storage Error: Unable to save entry.','error');
+  }
+}
+
+function clearForm(){
+  document.getElementById('v-no').value='VCH-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('v-party').value='';document.getElementById('v-amount').value='';
+  document.getElementById('v-ref').value='';document.getElementById('v-desc').value='';
+}
+
+function delEntry(id){
+  var original = entries;
+  entries=entries.filter(function(e){return e.id!==id});
+  try {
+    localStorage.setItem('udhyog_accounts',JSON.stringify(entries));
+    renderLedger();renderReports();
+  } catch (e) {
+    entries = original;
+    alert('Storage Error: Unable to delete entry.');
+  }
+}
+
+function filterDate(d,range){
+  if(range==='all')return true;
+  var now=new Date(),ed=new Date(d);
+  if(range==='today')return ed.toDateString()===now.toDateString();
+  if(range==='week'){var w=new Date(now);w.setDate(w.getDate()-7);return ed>=w}
+  if(range==='month')return ed.getMonth()===now.getMonth()&&ed.getFullYear()===now.getFullYear();
+  if(range==='year')return ed.getFullYear()===now.getFullYear();
+  return true;
+}
+
+function renderLedger(){
+  var ft=document.getElementById('f-type').value;
+  var fr=document.getElementById('f-range').value;
+  var fs=(document.getElementById('f-search').value||'').toLowerCase();
+  var sorted=entries.slice().sort(function(a,b){return new Date(a.date)-new Date(b.date)});
+  var list=sorted.filter(function(e){
+    if(ft!=='all'&&e.type!==ft)return false;
+    if(!filterDate(e.date,fr))return false;
+    if(fs&&e.party.toLowerCase().indexOf(fs)===-1&&(e.desc||'').toLowerCase().indexOf(fs)===-1&&e.vNo.toLowerCase().indexOf(fs)===-1)return false;
+    return true;
+  });
+
+  var totalIn=0,totalOut=0;
+  entries.forEach(function(e){totalIn+=e.credit||0;totalOut+=e.debit||0});
+  document.getElementById('s-income').textContent='₹'+fmt(totalIn);
+  document.getElementById('s-expense').textContent='₹'+fmt(totalOut);
+  document.getElementById('s-balance').textContent='₹'+fmt(totalIn-totalOut);
+  document.getElementById('s-count').textContent=entries.length;
+  document.getElementById('bal-display').textContent='₹'+fmt(totalIn-totalOut);
+  document.getElementById('bal-date').textContent=new Date().toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+
+  var body=document.getElementById('ledger-body');
+  var emptyEl=document.getElementById('ledger-empty');
+  if(!list.length){body.innerHTML='';emptyEl.style.display='block';return}
+  emptyEl.style.display='none';
+  var runBal=0;
+  body.innerHTML=list.map(function(e){
+    runBal+=((e.credit||0)-(e.debit||0));
+    return '<tr>'+
+      '<td>'+e.date+'</td>'+
+      '<td style="font-weight:600;color:#1a237e">'+esc(e.vNo)+'</td>'+
+      '<td><span class="type-badge '+e.type+'">'+e.type.toUpperCase()+'</span></td>'+
+      '<td>'+esc(e.party)+(e.desc?'<br><span style="font-size:10px;color:#999">'+esc(e.desc)+'</span>':'')+'</td>'+
+      '<td class="dr">'+(e.debit?'₹'+fmt(e.debit):'—')+'</td>'+
+      '<td class="cr">'+(e.credit?'₹'+fmt(e.credit):'—')+'</td>'+
+      '<td style="font-weight:700;color:'+(runBal>=0?'#2e7d32':'#c62828')+'">₹'+fmt(runBal)+'</td>'+
+      '<td><button class="del-btn" onclick="delEntry('+e.id+')">&times;</button></td></tr>';
+  }).join('');
+}
+
+function renderReports(){
+  var inc=0,exp=0,pur=0,sal=0;
+  var cats={},months={};
+  entries.forEach(function(e){
+    if(e.type==='income')inc+=e.amount;
+    if(e.type==='expense')exp+=e.amount;
+    if(e.type==='purchase')pur+=e.amount;
+    if(e.type==='sale')sal+=e.amount;
+    var c=e.category||'General';
+    if(!cats[c])cats[c]={count:0,dr:0,cr:0};
+    cats[c].count++;cats[c].dr+=e.debit||0;cats[c].cr+=e.credit||0;
+    var m=e.date?e.date.substring(0,7):'Unknown';
+    if(!months[m])months[m]={inc:0,exp:0};
+    months[m].inc+=e.credit||0;months[m].exp+=e.debit||0;
+  });
+  document.getElementById('r-income').textContent='₹'+fmt(inc);
+  document.getElementById('r-expense').textContent='₹'+fmt(exp);
+  document.getElementById('r-purchase').textContent='₹'+fmt(pur);
+  document.getElementById('r-sale').textContent='₹'+fmt(sal);
+
+  var cb=document.getElementById('cat-body');
+  var catKeys=Object.keys(cats);
+  cb.innerHTML=catKeys.length?catKeys.map(function(c){var d=cats[c];return '<tr><td style="font-weight:600">'+esc(c)+'</td><td>'+d.count+'</td><td class="dr">₹'+fmt(d.dr)+'</td><td class="cr">₹'+fmt(d.cr)+'</td><td style="font-weight:700;color:'+(d.cr-d.dr>=0?'#2e7d32':'#c62828')+'">₹'+fmt(d.cr-d.dr)+'</td></tr>'}).join(''):'<tr><td colspan="5" style="text-align:center;color:#999;padding:20px">No data</td></tr>';
+
+  var mb=document.getElementById('month-body');
+  var mKeys=Object.keys(months).sort().reverse();
+  mb.innerHTML=mKeys.length?mKeys.map(function(m){var d=months[m];return '<tr><td style="font-weight:600">'+m+'</td><td class="cr">₹'+fmt(d.inc)+'</td><td class="dr">₹'+fmt(d.exp)+'</td><td style="font-weight:700;color:'+(d.inc-d.exp>=0?'#2e7d32':'#c62828')+'">₹'+fmt(d.inc-d.exp)+'</td></tr>'}).join(''):'<tr><td colspan="4" style="text-align:center;color:#999;padding:20px">No data</td></tr>';
+}
+</script>
+</body>
+</html>

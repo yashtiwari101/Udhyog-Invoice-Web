@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Edit Items - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap"
+    rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans', Arial, sans-serif;
+      background: #eef2ff;
+      color: #222;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      height: 58px;
+      background: #1a237e;
+      border-bottom: 3px solid #ffeb3b;
+    }
+
+    .topbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .topbar .logo-icon {
+      width: 32px;
+      height: 32px;
+      background: #ffeb3b;
+      color: #1a237e;
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 16px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .topbar .logo-text {
+      font-family: 'Baloo 2', cursive;
+      font-weight: 800;
+      font-size: 17px;
+      color: #fff;
+    }
+
+    .topbar .logo-text .accent {
+      color: #ffeb3b;
+    }
+
+    .topbar h1 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #c5cae9;
+    }
+
+    /* FORM AREA */
+    .form-area {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px 40px;
+      flex: 1;
+    }
+
+    .section-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #1a237e;
+      border-left: 4px solid #ffeb3b;
+      padding-left: 10px;
+      margin: 20px 0 14px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    /* MSG BOX */
+    .msg-box {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 18px;
+      display: none;
+    }
+
+    .msg-box.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+
+    .msg-box.error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+
+    /* FIELD GROUP */
+    .field-group {
+      margin-bottom: 22px;
+    }
+
+    .field-group label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #444;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+
+    .field-group input,
+    .field-group select {
+      width: 100%;
+      background: #fafbff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #222;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+      transition: border .2s;
+    }
+
+    .field-group select {
+      color: #555;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23666' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      background-color: #fafbff;
+      padding-right: 36px;
+    }
+
+    .field-group select option {
+      background: #fff;
+      color: #222;
+    }
+
+    .field-group input::placeholder {
+      color: #999;
+    }
+
+    .field-group input:focus {
+      border-color: #1a237e;
+      background: #fff;
+    }
+
+    .field-group select:focus {
+      border-color: #1a237e;
+      background: #fff;
+      color: #222;
+    }
+
+    /* FORM ROW GRID */
+    .form-row {
+      display: grid;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .form-row.c4 { grid-template-columns: repeat(4, 1fr); }
+    .form-row.c3 { grid-template-columns: repeat(3, 1fr); }
+    .form-row.c2 { grid-template-columns: repeat(2, 1fr); }
+
+    @media (max-width: 768px) {
+      .form-row.c4, .form-row.c3, .form-row.c2 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .field-group select:focus {
+      border-color: #1a237e;
+      background: #fff;
+      color: #222;
+    }
+
+    /* SECTION SUB LABEL */
+    .section-label {
+      font-size: 14px;
+      color: #777;
+      margin-bottom: 22px;
+      margin-top: -8px;
+    }
+
+    /* BARCODE ROW */
+    .barcode-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .barcode-row input {
+      flex: 1;
+      background: #fafbff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #222;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+    }
+
+    .barcode-row input::placeholder {
+      color: #999;
+    }
+
+    .barcode-row input:focus {
+      border-color: #1a237e;
+      background: #fff;
+    }
+
+    .scan-btn {
+      width: 52px;
+      height: 52px;
+      background: #1a237e;
+      border: none;
+      border-radius: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .scan-btn:hover {
+      background: #283593;
+    }
+
+    .scan-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* SAVE BUTTON */
+    .btn-save {
+      width: 100%;
+      background: #1a237e;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive;
+      margin-top: 12px;
+    }
+
+    .btn-save:hover {
+      background: #283593;
+    }
+
+    .btn-save:active {
+      transform: scale(0.98);
+    }
+
+    /* HOME INDICATOR */
+    .home-indicator {
+      text-align: center;
+      padding: 16px 0 12px;
+    }
+
+    .home-indicator span {
+      display: inline-block;
+      width: 110px;
+      height: 5px;
+      background: #2a2a2a;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a href="features.html" class="logo">
+      <div class="logo-icon">U</div>
+      <span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+    <h1>Edit Items</h1>
+  </div>
+
+  <div class="form-area">
+
+    <div id="msg-box" class="msg-box"></div>
+
+    <div class="section-title">Select Product</div>
+    <div class="card">
+      <div class="form-row c1">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label>Product</label>
+          <select id="select-product" onchange="loadProduct()">
+            <option value="">-- tap to select --</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-title">Edit Details</div>
+    <div class="card">
+      <div class="form-row c4">
+        <div class="field-group" style="margin-bottom: 0;">
+          <label>Product Name</label>
+          <input type="text" id="prod-name" placeholder="Product name" />
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label>Price (&#8377;)</label>
+          <input type="number" id="prod-price" placeholder="0.00" min="0" step="0.01" />
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label>Quantity</label>
+          <input type="number" id="prod-qty" placeholder="0" min="0" />
+        </div>
+        <div class="field-group" style="margin-bottom: 0;">
+          <label>Barcode</label>
+          <div class="barcode-row">
+            <input type="text" id="prod-barcode" placeholder="Scan or type barcode" />
+            <button class="scan-btn" onclick="scanBarcode()">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M2 9 L2 3 L8 3" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                  fill="none" />
+                <path d="M20 3 L26 3 L26 9" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                  stroke-linejoin="round" fill="none" />
+                <path d="M26 19 L26 25 L20 25" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                  stroke-linejoin="round" fill="none" />
+                <path d="M8 25 L2 25 L2 19" stroke="white" stroke-width="2.5" stroke-linecap="round"
+                  stroke-linejoin="round" fill="none" />
+                <rect x="11" y="11" width="6" height="6" rx="1.5" fill="white" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-save" onclick="saveChanges()">Save Changes</button>
+    </div>
+
+  </div>
+
+  <!-- HOME INDICATOR -->
+  <div class="home-indicator"><span></span></div>
+
+  <script>
+    var products = [];
+    var selectedId = null;
+
+    window.onload = function () {
+      loadFromStorage();
+      populateDropdown();
+    };
+
+    function loadFromStorage() {
+      products = JSON.parse(localStorage.getItem('udhyog_products') || '[]');
+    }
+
+    function populateDropdown() {
+      var sel = document.getElementById('select-product');
+      while (sel.options.length > 1) sel.remove(1);
+
+      if (products.length === 0) {
+        var opt = document.createElement('option');
+        opt.value = '';
+        opt.textContent = 'No products found — add items first';
+        opt.disabled = true;
+        sel.appendChild(opt);
+        return;
+      }
+
+      products.forEach(function (p) {
+        var opt = document.createElement('option');
+        opt.value = p.id;
+        opt.textContent = p.name + '  —  \u20B9' + Number(p.price).toLocaleString('en-IN');
+        sel.appendChild(opt);
+      });
+    }
+
+    function loadProduct() {
+      var sel = document.getElementById('select-product');
+      var id = parseInt(sel.value);
+
+      if (!id) {
+        clearFields();
+        selectedId = null;
+        return;
+      }
+
+      var p = products.find(function (x) { return x.id === id; });
+      if (!p) return;
+
+      selectedId = p.id;
+
+      setVal('prod-name', p.name);
+      setVal('prod-price', p.price);
+      setVal('prod-qty', p.qty);
+      setVal('prod-barcode', p.barcode === '—' ? '' : p.barcode);
+
+      whiten(['prod-name', 'prod-price', 'prod-qty', 'prod-barcode']);
+    }
+
+    function saveChanges() {
+      if (!selectedId) {
+        showMsg('Please select a product first!', 'error');
+        return;
+      }
+
+      var name = document.getElementById('prod-name').value.trim();
+      var price = document.getElementById('prod-price').value.trim();
+      var qty = document.getElementById('prod-qty').value.trim();
+      var barcode = document.getElementById('prod-barcode').value.trim();
+
+      if (!name) { showMsg('Product Name cannot be empty!', 'error'); return; }
+      if (!price || isNaN(price)) { showMsg('Please enter a valid Price!', 'error'); return; }
+      if (!qty || isNaN(qty)) { showMsg('Please enter a valid Quantity!', 'error'); return; }
+
+      products = products.map(function (p) {
+        if (p.id !== selectedId) return p;
+        return {
+          id: p.id,
+          name: name,
+          price: parseFloat(price),
+          qty: parseInt(qty),
+          barcode: barcode || '—',
+          addedAt: p.addedAt,
+          editedAt: new Date().toLocaleString()
+        };
+      });
+
+      var original = JSON.parse(localStorage.getItem('udhyog_products') || '[]');
+      try {
+        localStorage.setItem('udhyog_products', JSON.stringify(products));
+        populateDropdown();
+        document.getElementById('select-product').value = selectedId;
+        showMsg('Product updated successfully! \u2714', 'success');
+      } catch (e) {
+        products = original;
+        showMsg('Storage Error: Unable to save changes.', 'error');
+      }
+    }
+
+    function scanBarcode() {
+      var fake = 'BAR' + Math.floor(Math.random() * 900000 + 100000);
+      var el = document.getElementById('prod-barcode');
+      el.value = fake;
+      el.style.color = '#fff';
+      el.focus();
+    }
+
+    function clearFields() {
+      ['prod-name', 'prod-price', 'prod-qty', 'prod-barcode'].forEach(function (id) {
+        document.getElementById(id).value = '';
+        document.getElementById(id).style.color = '#555';
+      });
+    }
+
+    function setVal(id, val) {
+      document.getElementById(id).value = val;
+    }
+
+    function whiten(ids) {
+      ids.forEach(function (id) {
+        document.getElementById(id).style.color = '#fff';
+      });
+    }
+
+    function showMsg(text, type) {
+      var el = document.getElementById('msg-box');
+      el.textContent = text;
+      el.className = 'msg-box ' + type;
+      el.style.display = 'block';
+      setTimeout(function () { el.style.display = 'none'; }, 3000);
+    }
+  </script>
+
+</body>
+
+</html>

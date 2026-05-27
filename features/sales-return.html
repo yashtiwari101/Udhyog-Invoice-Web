@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Sales & Purchase Return - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Noto+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box}
+    body{font-family:'Noto Sans',Arial,sans-serif;background:#eef2ff;color:#222;min-height:100vh}
+    .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 20px;height:58px;background:#1a237e;border-bottom:3px solid #ffeb3b}
+    .topbar .logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+    .topbar .logo-icon{width:32px;height:32px;background:#ffeb3b;color:#1a237e;font-family:'Baloo 2',cursive;font-weight:800;font-size:16px;border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .topbar .logo-text{font-family:'Baloo 2',cursive;font-weight:800;font-size:17px;color:#fff}
+    .topbar .logo-text .accent{color:#ffeb3b}
+    .topbar h1{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700;color:#c5cae9}
+
+    .tabs{display:flex;background:#fff;border-bottom:2px solid #e0e0e0;padding:0 24px}
+    .tab-btn{padding:13px 22px;border:none;background:none;font-family:'Baloo 2',cursive;font-size:14px;font-weight:700;color:#666;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;transition:color .2s}
+    .tab-btn.active{color:#1a237e;border-bottom-color:#ffeb3b}
+    .tab-btn:hover{color:#1a237e}
+    .tab-panel{display:none}.tab-panel.active{display:block}
+
+    .container{max-width:980px;margin:0 auto;padding:24px 20px 40px}
+    .section-title{font-family:'Baloo 2',cursive;font-size:16px;font-weight:700;color:#1a237e;border-left:4px solid #ffeb3b;padding-left:10px;margin:22px 0 14px}
+    .section-title .badge{display:inline-block;background:#ffeb3b;color:#1a237e;font-size:10px;font-weight:800;padding:2px 8px;border-radius:20px;margin-left:8px;vertical-align:middle}
+    .card{background:#fff;border:1.5px solid #c5cae9;border-radius:12px;padding:20px;margin-bottom:18px}
+
+    .form-row{display:grid;gap:14px;margin-bottom:14px}
+    .form-row.c4{grid-template-columns:repeat(4,1fr)}
+    .form-row.c3{grid-template-columns:repeat(3,1fr)}
+    .form-row.c2{grid-template-columns:repeat(2,1fr)}
+    .fg label{display:block;font-size:11px;font-weight:700;color:#444;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+    .fg input,.fg select,.fg textarea{width:100%;border:1.5px solid #c5cae9;border-radius:8px;padding:10px 12px;font-size:13px;font-family:'Noto Sans',sans-serif;background:#fafbff;outline:none;transition:border .2s}
+    .fg input:focus,.fg select:focus{border-color:#1a237e;background:#fff}
+    .fg textarea{resize:vertical;min-height:60px}
+
+    .items-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-bottom:12px}
+    .items-tbl th{background:#1a237e;color:#fff;padding:9px 8px;text-align:left;font-size:11px;font-weight:600}
+    .items-tbl td{padding:7px 8px;border-bottom:1px solid #e8eaf6}
+    .items-tbl input,.items-tbl select{border:1px solid #c5cae9;border-radius:6px;padding:7px;font-size:12px;background:#fafbff;font-family:'Noto Sans',sans-serif;outline:none}
+    .items-tbl input:focus,.items-tbl select:focus{border-color:#1a237e}
+    .items-tbl .desc-in{width:100%;min-width:120px}
+    .items-tbl .sm-in{width:55px;text-align:center}
+    .items-tbl .md-in{width:80px}
+    .amt-cell{font-weight:700;color:#1a237e;white-space:nowrap}
+    .rm-btn{background:none;border:none;color:#f44336;font-size:17px;cursor:pointer;padding:2px}
+    .rm-btn:hover{color:#d32f2f}
+
+    .btn-add-row{background:#fff;border:1.5px dashed #c5cae9;border-radius:8px;padding:9px 16px;font-size:12px;font-weight:700;color:#1a237e;cursor:pointer;font-family:'Baloo 2',cursive}
+    .btn-add-row:hover{background:#e8eaf6;border-color:#1a237e}
+
+    .totals-wrap{display:flex;justify-content:flex-end;margin-top:12px}
+    .totals{min-width:240px;border:1.5px solid #c5cae9;border-radius:8px;overflow:hidden}
+    .tot-row{display:flex;justify-content:space-between;padding:7px 12px;font-size:12px;border-bottom:1px solid #e8eaf6}
+    .tot-row:last-child{background:#1a237e;color:#fff;font-weight:700;font-size:13px;border:none}
+    .tot-row:last-child .tot-val{color:#ffeb3b}
+
+    .btn-bar{display:flex;gap:10px;margin-top:20px;flex-wrap:wrap}
+    .btn{padding:11px 22px;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Baloo 2',cursive;border:none;transition:all .2s}
+    .btn-navy{background:#1a237e;color:#fff}.btn-navy:hover{background:#283593}
+    .btn-green{background:#2e7d32;color:#fff}.btn-green:hover{background:#1b5e20}
+    .btn-red{background:#c62828;color:#fff}.btn-red:hover{background:#b71c1c}
+    .btn-outline{background:#fff;color:#1a237e;border:2px solid #1a237e}.btn-outline:hover{background:#e8eaf6}
+
+    .divider{height:3px;background:linear-gradient(90deg,#1a237e,#ffeb3b);border-radius:2px;margin:30px 0 10px}
+
+    .history-item{background:#fff;border:1.5px solid #c5cae9;border-radius:10px;padding:12px 16px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;transition:all .15s}
+    .history-item:hover{border-color:#7986cb;box-shadow:0 4px 14px rgba(26,35,126,.08)}
+    .hi-left{flex:1}
+    .hi-id{font-weight:700;color:#1a237e;font-size:13px}
+    .hi-meta{font-size:11px;color:#777;margin-top:2px}
+    .hi-right{text-align:right}
+    .hi-amt{font-family:'Baloo 2',cursive;font-size:15px;font-weight:700}
+    .hi-amt.credit{color:#2e7d32}
+    .hi-amt.debit{color:#c62828}
+    .hi-type{font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;display:inline-block}
+    .hi-type.sale{background:#fbe9e7;color:#c62828}
+    .hi-type.purchase{background:#e8f5e9;color:#2e7d32}
+    .hi-del{background:none;border:none;color:#f44336;font-size:11px;cursor:pointer;margin-top:4px}
+
+    .empty-state{text-align:center;padding:30px 20px;color:#999;font-size:13px}
+    .msg-box{padding:10px 14px;border-radius:8px;font-size:12px;font-weight:bold;margin-bottom:14px;display:none}
+    .msg-box.success{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7;display:block}
+    .msg-box.error{background:#ffebee;color:#c62828;border:1px solid #ef9a9a;display:block}
+
+    .footer{background:#0d1142;color:#c5cae9;text-align:center;padding:16px;font-size:12px;margin-top:30px;border-top:2px solid rgba(255,235,59,.15)}
+    .footer b{color:#ffeb3b}
+
+    @media(max-width:700px){.form-row.c4,.form-row.c3{grid-template-columns:1fr 1fr}}
+    @media(max-width:480px){.form-row.c4,.form-row.c3,.form-row.c2{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="features.html" class="logo">
+    <div class="logo-icon">U</div><span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+  </a>
+  <h1>Sales & Purchase Return</h1>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('entry')">📝 New Return Entry</button>
+  <button class="tab-btn" onclick="switchTab('history')">📋 Return History</button>
+</div>
+
+<!-- ENTRY TAB -->
+<div class="tab-panel active" id="tab-entry">
+<div class="container">
+  <div id="msg-box-s" class="msg-box"></div>
+
+  <!-- ═══════ SALES RETURN SECTION ═══════ -->
+  <div class="section-title">🔄 Sales Return <span class="badge">CREDIT NOTE</span></div>
+  <div class="card">
+    <div class="form-row c4">
+      <div class="fg"><label>Return No.</label><input type="text" id="sr-no" readonly/></div>
+      <div class="fg"><label>Return Date</label><input type="date" id="sr-date"/></div>
+      <div class="fg"><label>Original Invoice No.</label><input type="text" id="sr-inv" placeholder="e.g. UI-12345"/></div>
+      <div class="fg"><label>Reason</label>
+        <select id="sr-reason"><option>Defective Product</option><option>Wrong Item Delivered</option><option>Quality Issue</option><option>Customer Cancellation</option><option>Excess Quantity</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="form-row c3">
+      <div class="fg"><label>Customer Name *</label><input type="text" id="sr-cust" placeholder="e.g. Ramesh Kumar"/></div>
+      <div class="fg"><label>Customer GST</label><input type="text" id="sr-gst" placeholder="Optional"/></div>
+      <div class="fg"><label>Phone</label><input type="text" id="sr-phone" placeholder="+91 99999 88888"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="items-tbl">
+      <thead><tr><th>#</th><th>Item Description</th><th>Qty</th><th>Rate (₹)</th><th>GST %</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="sr-rows"></tbody>
+    </table>
+    <button class="btn-add-row" onclick="addSR()">+ Add Item</button>
+    <div class="totals-wrap">
+      <div class="totals">
+        <div class="tot-row"><span>Subtotal</span><span class="tot-val" id="sr-sub">₹0.00</span></div>
+        <div class="tot-row"><span>CGST</span><span class="tot-val" id="sr-cgst">₹0.00</span></div>
+        <div class="tot-row"><span>SGST</span><span class="tot-val" id="sr-sgst">₹0.00</span></div>
+        <div class="tot-row"><span>Credit Total</span><span class="tot-val" id="sr-total">₹0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="fg"><label>Remarks / Notes</label><textarea id="sr-notes" placeholder="Reason for return, condition of goods..."></textarea></div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-green" onclick="saveSR()">💾 Save Sales Return</button>
+    <button class="btn btn-outline" onclick="clearSR()">🗑 Clear</button>
+  </div>
+
+  <!-- ═══════ DIVIDER ═══════ -->
+  <div class="divider"></div>
+
+  <!-- ═══════ PURCHASE RETURN SECTION ═══════ -->
+  <div id="msg-box-p" class="msg-box"></div>
+  <div class="section-title">🔁 Purchase Return <span class="badge">DEBIT NOTE</span></div>
+  <div class="card">
+    <div class="form-row c4">
+      <div class="fg"><label>Return No.</label><input type="text" id="pr-no" readonly/></div>
+      <div class="fg"><label>Return Date</label><input type="date" id="pr-date"/></div>
+      <div class="fg"><label>Original Purchase No.</label><input type="text" id="pr-inv" placeholder="e.g. PO-56789"/></div>
+      <div class="fg"><label>Reason</label>
+        <select id="pr-reason"><option>Defective Goods</option><option>Wrong Item Received</option><option>Quality Not As Per Sample</option><option>Excess Quantity Received</option><option>Damaged in Transit</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="form-row c3">
+      <div class="fg"><label>Supplier Name *</label><input type="text" id="pr-supp" placeholder="e.g. ABC Traders"/></div>
+      <div class="fg"><label>Supplier GST</label><input type="text" id="pr-gst" placeholder="Optional"/></div>
+      <div class="fg"><label>Phone</label><input type="text" id="pr-phone" placeholder="+91 99999 88888"/></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <table class="items-tbl">
+      <thead><tr><th>#</th><th>Item Description</th><th>Qty</th><th>Rate (₹)</th><th>GST %</th><th>Amount</th><th></th></tr></thead>
+      <tbody id="pr-rows"></tbody>
+    </table>
+    <button class="btn-add-row" onclick="addPR()">+ Add Item</button>
+    <div class="totals-wrap">
+      <div class="totals">
+        <div class="tot-row"><span>Subtotal</span><span class="tot-val" id="pr-sub">₹0.00</span></div>
+        <div class="tot-row"><span>CGST</span><span class="tot-val" id="pr-cgst">₹0.00</span></div>
+        <div class="tot-row"><span>SGST</span><span class="tot-val" id="pr-sgst">₹0.00</span></div>
+        <div class="tot-row"><span>Debit Total</span><span class="tot-val" id="pr-total">₹0.00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="fg"><label>Remarks / Notes</label><textarea id="pr-notes" placeholder="Reason for return, supplier communication..."></textarea></div>
+  </div>
+
+  <div class="btn-bar">
+    <button class="btn btn-red" onclick="savePR()">💾 Save Purchase Return</button>
+    <button class="btn btn-outline" onclick="clearPR()">🗑 Clear</button>
+  </div>
+</div>
+</div>
+
+<!-- HISTORY TAB -->
+<div class="tab-panel" id="tab-history">
+<div class="container">
+  <div class="section-title">📋 All Return Entries</div>
+  <div class="form-row c2" style="margin-bottom:18px">
+    <div class="fg"><label>Filter By Type</label>
+      <select id="filter-type" onchange="renderHistory()"><option value="all">All Returns</option><option value="sales">Sales Returns Only</option><option value="purchase">Purchase Returns Only</option></select>
+    </div>
+    <div class="fg"><label>Search</label><input type="text" id="filter-search" placeholder="Search by name, invoice no..." oninput="renderHistory()"/></div>
+  </div>
+  <div id="history-list"></div>
+</div>
+</div>
+
+<div class="footer">&copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with &#10084; for Indian Businesses</div>
+
+<script>
+var returns=JSON.parse(localStorage.getItem('udhyog_returns')||'[]');
+var srCount=0,prCount=0;
+function fmt(n){return Number(n||0).toLocaleString('en-IN',{minimumFractionDigits:2})}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function showMsg(id,text,type){var el=document.getElementById(id);el.textContent=text;el.className='msg-box '+type;setTimeout(function(){el.className='msg-box'},3000)}
+
+window.onload=function(){
+  document.getElementById('sr-no').value='SR-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('pr-no').value='PR-'+Math.floor(Math.random()*90000+10000);
+  var today=new Date().toISOString().split('T')[0];
+  document.getElementById('sr-date').value=today;
+  document.getElementById('pr-date').value=today;
+  addSR();addPR();renderHistory();
+};
+
+function switchTab(t){
+  document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});
+  document.querySelectorAll('.tab-panel').forEach(function(p){p.classList.remove('active')});
+  if(t==='entry'){document.querySelector('.tab-btn:nth-child(1)').classList.add('active');document.getElementById('tab-entry').classList.add('active')}
+  else{document.querySelector('.tab-btn:nth-child(2)').classList.add('active');document.getElementById('tab-history').classList.add('active');renderHistory()}
+}
+
+function makeRow(prefix,count){
+  var tr=document.createElement('tr');tr.id=prefix+'-row-'+count;
+  tr.innerHTML='<td>'+count+'</td>'+
+    '<td><input class="desc-in" type="text" placeholder="Item name" id="'+prefix+'-desc-'+count+'"/></td>'+
+    '<td><input class="sm-in" type="number" value="1" min="1" id="'+prefix+'-qty-'+count+'" oninput="calcTot(\''+prefix+'\')"/></td>'+
+    '<td><input class="md-in" type="number" value="0" min="0" step="0.01" id="'+prefix+'-rate-'+count+'" oninput="calcTot(\''+prefix+'\')"/></td>'+
+    '<td><select id="'+prefix+'-gst-'+count+'" onchange="calcTot(\''+prefix+'\')"><option value="0">0%</option><option value="5">5%</option><option value="12">12%</option><option value="18" selected>18%</option><option value="28">28%</option></select></td>'+
+    '<td class="amt-cell" id="'+prefix+'-amt-'+count+'">₹0.00</td>'+
+    (count>1?'<td><button class="rm-btn" onclick="rmRow(\''+prefix+'\','+count+')">&times;</button></td>':'<td></td>');
+  return tr;
+}
+function addSR(){srCount++;document.getElementById('sr-rows').appendChild(makeRow('sr',srCount))}
+function addPR(){prCount++;document.getElementById('pr-rows').appendChild(makeRow('pr',prCount))}
+function rmRow(p,n){var el=document.getElementById(p+'-row-'+n);if(el)el.remove();calcTot(p)}
+
+function calcTot(p){
+  var rows=document.querySelectorAll('#'+p+'-rows tr');
+  var sub=0,tax=0;
+  rows.forEach(function(r){
+    var n=r.id.replace(p+'-row-','');
+    var q=parseFloat(document.getElementById(p+'-qty-'+n)?.value)||0;
+    var rate=parseFloat(document.getElementById(p+'-rate-'+n)?.value)||0;
+    var gst=parseFloat(document.getElementById(p+'-gst-'+n)?.value)||0;
+    var line=q*rate;var lt=line*(gst/100);
+    sub+=line;tax+=lt;
+    var ae=document.getElementById(p+'-amt-'+n);
+    if(ae)ae.textContent='₹'+fmt(line+lt);
+  });
+  document.getElementById(p+'-sub').textContent='₹'+fmt(sub);
+  document.getElementById(p+'-cgst').textContent='₹'+fmt(tax/2);
+  document.getElementById(p+'-sgst').textContent='₹'+fmt(tax/2);
+  document.getElementById(p+'-total').textContent='₹'+fmt(sub+tax);
+}
+
+function getItems(p){
+  var items=[];
+  document.querySelectorAll('#'+p+'-rows tr').forEach(function(r){
+    var n=r.id.replace(p+'-row-','');
+    var desc=(document.getElementById(p+'-desc-'+n)?.value||'').trim();
+    var qty=parseFloat(document.getElementById(p+'-qty-'+n)?.value)||0;
+    var rate=parseFloat(document.getElementById(p+'-rate-'+n)?.value)||0;
+    var gst=parseFloat(document.getElementById(p+'-gst-'+n)?.value)||0;
+    if(desc&&qty&&rate)items.push({desc:desc,qty:qty,rate:rate,gst:gst,amount:qty*rate*(1+gst/100)});
+  });
+  return items;
+}
+
+function saveSR(){
+  var cust=document.getElementById('sr-cust').value.trim();
+  if(!cust){showMsg('msg-box-s','Please enter Customer Name!','error');return}
+  var items=getItems('sr');
+  if(items.length===0){showMsg('msg-box-s','Please add at least one item!','error');return}
+  var total=items.reduce(function(s,i){return s+i.amount},0);
+  var entry={id:Date.now(),type:'sales',returnNo:document.getElementById('sr-no').value,date:document.getElementById('sr-date').value,
+    origInv:document.getElementById('sr-inv').value.trim(),reason:document.getElementById('sr-reason').value,
+    party:cust,partyGst:document.getElementById('sr-gst').value.trim(),phone:document.getElementById('sr-phone').value.trim(),
+    items:items,total:total,notes:document.getElementById('sr-notes').value.trim(),createdAt:new Date().toLocaleString()};
+  returns.unshift(entry);
+  try {
+    localStorage.setItem('udhyog_returns',JSON.stringify(returns));
+    showMsg('msg-box-s','Sales Return '+entry.returnNo+' saved! ✔','success');
+    clearSR();
+  } catch (e) {
+    returns.shift();
+    showMsg('msg-box-s','Storage Error: Unable to save return entry.','error');
+  }
+}
+
+function savePR(){
+  var supp=document.getElementById('pr-supp').value.trim();
+  if(!supp){showMsg('msg-box-p','Please enter Supplier Name!','error');return}
+  var items=getItems('pr');
+  if(items.length===0){showMsg('msg-box-p','Please add at least one item!','error');return}
+  var total=items.reduce(function(s,i){return s+i.amount},0);
+  var entry={id:Date.now(),type:'purchase',returnNo:document.getElementById('pr-no').value,date:document.getElementById('pr-date').value,
+    origInv:document.getElementById('pr-inv').value.trim(),reason:document.getElementById('pr-reason').value,
+    party:supp,partyGst:document.getElementById('pr-gst').value.trim(),phone:document.getElementById('pr-phone').value.trim(),
+    items:items,total:total,notes:document.getElementById('pr-notes').value.trim(),createdAt:new Date().toLocaleString()};
+  returns.unshift(entry);
+  try {
+    localStorage.setItem('udhyog_returns',JSON.stringify(returns));
+    showMsg('msg-box-p','Purchase Return '+entry.returnNo+' saved! ✔','success');
+    clearPR();
+  } catch (e) {
+    returns.shift();
+    showMsg('msg-box-p','Storage Error: Unable to save return entry.','error');
+  }
+}
+
+function clearSR(){
+  document.getElementById('sr-no').value='SR-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('sr-inv').value='';document.getElementById('sr-cust').value='';
+  document.getElementById('sr-gst').value='';document.getElementById('sr-phone').value='';document.getElementById('sr-notes').value='';
+  document.getElementById('sr-rows').innerHTML='';srCount=0;addSR();calcTot('sr');
+}
+function clearPR(){
+  document.getElementById('pr-no').value='PR-'+Math.floor(Math.random()*90000+10000);
+  document.getElementById('pr-inv').value='';document.getElementById('pr-supp').value='';
+  document.getElementById('pr-gst').value='';document.getElementById('pr-phone').value='';document.getElementById('pr-notes').value='';
+  document.getElementById('pr-rows').innerHTML='';prCount=0;addPR();calcTot('pr');
+}
+
+function deleteReturn(id){
+  var originalReturns = returns;
+  returns=returns.filter(function(r){return r.id!==id});
+  try {
+    localStorage.setItem('udhyog_returns',JSON.stringify(returns));
+    renderHistory();
+  } catch (e) {
+    returns = originalReturns;
+    alert('Storage Error: Unable to delete entry.');
+  }
+}
+
+function renderHistory(){
+  var filter=document.getElementById('filter-type').value;
+  var search=(document.getElementById('filter-search').value||'').toLowerCase();
+  var list=returns.filter(function(r){
+    if(filter!=='all'&&r.type!==filter)return false;
+    if(search&&r.party.toLowerCase().indexOf(search)===-1&&r.returnNo.toLowerCase().indexOf(search)===-1&&(r.origInv||'').toLowerCase().indexOf(search)===-1)return false;
+    return true;
+  });
+  var el=document.getElementById('history-list');
+  if(list.length===0){el.innerHTML='<div class="empty-state">No return entries found.</div>';return}
+  el.innerHTML=list.map(function(r){
+    var isSale=r.type==='sales';
+    return '<div class="history-item"><div class="hi-left">'+
+      '<div class="hi-id">'+esc(r.returnNo)+' <span class="hi-type '+(isSale?'sale':'purchase')+'">'+(isSale?'SALES RETURN':'PURCHASE RETURN')+'</span></div>'+
+      '<div class="hi-meta">'+esc(r.party)+' &bull; '+r.date+' &bull; Ref: '+(r.origInv||'—')+'</div>'+
+      '<div class="hi-meta">'+r.reason+' &bull; Items: '+r.items.length+'</div>'+
+      '</div><div class="hi-right">'+
+      '<div class="hi-amt '+(isSale?'credit':'debit')+'">₹'+fmt(r.total)+'</div>'+
+      '<button class="hi-del" onclick="deleteReturn('+r.id+')">✕ Delete</button>'+
+      '</div></div>';
+  }).join('');
+}
+</script>
+</body>
+</html>

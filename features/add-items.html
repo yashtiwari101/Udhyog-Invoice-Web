@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add / Remove - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans', Arial, sans-serif;
+      background: #eef2ff;
+      color: #222;
+      min-height: 100vh;
+    }
+
+    /* TOP BAR */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      height: 58px;
+      background: #1a237e;
+      border-bottom: 3px solid #ffeb3b;
+    }
+    .topbar .logo {
+      display: flex; align-items: center; gap: 8px;
+      text-decoration: none;
+    }
+    .topbar .logo-icon {
+      width: 32px; height: 32px;
+      background: #ffeb3b; color: #1a237e;
+      font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 16px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .topbar .logo-text {
+      font-family: 'Baloo 2', cursive; font-weight: 800; font-size: 17px;
+      color: #fff;
+    }
+    .topbar .logo-text .accent { color: #ffeb3b; }
+    .topbar h1 {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px;
+      font-weight: 700;
+      color: #c5cae9;
+    }
+
+    /* FORM AREA */
+    .form-area {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px 30px;
+    }
+    .section-title {
+      font-family: 'Baloo 2', cursive;
+      font-size: 16px; font-weight: 700; color: #1a237e;
+      border-left: 4px solid #ffeb3b; padding-left: 10px;
+      margin: 20px 0 14px;
+    }
+    .card {
+      background: #fff; border: 1.5px solid #c5cae9;
+      border-radius: 12px; padding: 20px; margin-bottom: 20px;
+    }
+
+    /* FIELD GROUP */
+    .field-group {
+      margin-bottom: 22px;
+    }
+    .field-group label {
+      display: block;
+      font-size: 11px; font-weight: 700; color: #444;
+      text-transform: uppercase; letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+    .field-group input {
+      width: 100%;
+      background: #fafbff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #222;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+      transition: border .2s;
+    }
+    .field-group input::placeholder {
+      color: #999;
+    }
+    .field-group input:focus {
+      border-color: #1a237e;
+      background: #fff;
+    }
+
+    /* BARCODE ROW */
+    .barcode-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .barcode-row input {
+      flex: 1;
+      background: #fafbff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 14px;
+      color: #222;
+      font-family: 'Noto Sans', sans-serif;
+      outline: none;
+    }
+    .barcode-row input::placeholder { color: #999; }
+    .barcode-row input:focus { border-color: #1a237e; background: #fff; }
+
+    .scan-btn {
+      width: 52px;
+      height: 52px;
+      background: #1a237e;
+      border: none;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .scan-btn svg {
+      width: 26px;
+      height: 26px;
+    }
+    .scan-btn:hover { background: #283593; }
+    .scan-btn:active { transform: scale(0.95); }
+
+    /* BUTTONS */
+    .btn-area {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .btn-add {
+      width: 100%;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive;
+    }
+    .btn-add:hover { background: #1b5e20; }
+    .btn-add:active { transform: scale(0.98); }
+
+    .btn-remove {
+      width: 100%;
+      background: #fff;
+      color: #f44336;
+      border: 2px solid #f44336;
+      border-radius: 10px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: 'Baloo 2', cursive;
+    }
+    .btn-remove:hover { background: #ffebee; }
+    .btn-remove:active { transform: scale(0.98); }
+
+    /* MSG BOX */
+    .msg-box {
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 16px;
+      display: none;
+    }
+    .msg-box.success {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 1px solid #a5d6a7;
+    }
+    .msg-box.error {
+      background: #ffebee;
+      color: #c62828;
+      border: 1px solid #ef9a9a;
+    }
+
+    /* PRODUCT LIST */
+    .product-list {
+      margin-top: 30px;
+    }
+    .product-list h3 {
+      font-size: 14px;
+      color: #aaa;
+      margin-bottom: 12px;
+      border-bottom: 1px solid #222;
+      padding-bottom: 8px;
+    }
+    .product-item {
+      background: #fff;
+      border: 1.5px solid #c5cae9;
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .product-item .p-name {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1a237e;
+    }
+    .product-item .p-meta {
+      font-size: 12px;
+      color: #777;
+      margin-top: 3px;
+    }
+    .product-item .p-price {
+      font-size: 15px;
+      font-weight: bold;
+      color: #1a237e;
+    }
+    .no-products {
+      text-align: center;
+      color: #999;
+      font-size: 13px;
+      padding: 20px 0;
+    }
+
+    /* HOME INDICATOR */
+    .home-indicator {
+      text-align: center;
+      padding: 14px 0 8px;
+    }
+    .home-indicator span {
+      display: inline-block;
+      width: 100px;
+      height: 4px;
+      background: #333;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <a href="features.html" class="logo">
+      <div class="logo-icon">U</div>
+      <span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+    <h1>Add / Remove</h1>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-area">
+
+    <div id="msg-box" class="msg-box"></div>
+
+    <!-- Product Name -->
+    <div class="field-group">
+      <label>Product Name</label>
+      <input type="text" id="prod-name" placeholder="e.g. Samsung TV" />
+    </div>
+
+    <!-- Price -->
+    <div class="field-group">
+      <label>Price (&#8377;)</label>
+      <input type="number" id="prod-price" placeholder="0.00" min="0" step="0.01" />
+    </div>
+
+    <!-- Quantity -->
+    <div class="field-group">
+      <label>Quantity</label>
+      <input type="number" id="prod-qty" placeholder="0" min="0" />
+    </div>
+
+    <!-- Barcode -->
+    <div class="field-group">
+      <label>Barcode</label>
+      <div class="barcode-row">
+        <input type="text" id="prod-barcode" placeholder="Scan or type barcode" />
+        <button class="scan-btn" onclick="scanBarcode()">
+          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <!-- barcode scanner icon -->
+            <!-- corners -->
+            <path d="M2 8 L2 3 L7 3" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M19 3 L24 3 L24 8" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M24 18 L24 23 L19 23" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <path d="M7 23 L2 23 L2 18" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <!-- center square dot -->
+            <rect x="10" y="10" width="6" height="6" rx="1" fill="white"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- BUTTONS -->
+    <div class="btn-area">
+      <button class="btn-add" onclick="addProduct()">Add Product</button>
+      <button class="btn-remove" onclick="removeProduct()">Remove Product</button>
+    </div>
+
+    <!-- PRODUCT LIST -->
+    <div class="product-list">
+      <h3>&#128230; Added Products</h3>
+      <div id="prod-list">
+        <div class="no-products">No products added yet.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HOME INDICATOR -->
+  <div class="home-indicator"><span></span></div>
+
+<script>
+  var products = JSON.parse(localStorage.getItem('udhyog_products') || '[]');
+
+  window.onload = function () {
+    renderList();
+  };
+
+  function showMsg(text, type) {
+    var el = document.getElementById('msg-box');
+    el.textContent = text;
+    el.className = 'msg-box ' + type;
+    el.style.display = 'block';
+    setTimeout(function () { el.style.display = 'none'; }, 3000);
+  }
+
+  function clearForm() {
+    document.getElementById('prod-name').value = '';
+    document.getElementById('prod-price').value = '';
+    document.getElementById('prod-qty').value = '';
+    document.getElementById('prod-barcode').value = '';
+  }
+
+  function addProduct() {
+    var name    = document.getElementById('prod-name').value.trim();
+    var price   = document.getElementById('prod-price').value.trim();
+    var qty     = document.getElementById('prod-qty').value.trim();
+    var barcode = document.getElementById('prod-barcode').value.trim();
+
+    if (!name) { showMsg('Please enter Product Name!', 'error'); return; }
+    if (!price || isNaN(price)) { showMsg('Please enter a valid Price!', 'error'); return; }
+    if (!qty || isNaN(qty)) { showMsg('Please enter Quantity!', 'error'); return; }
+
+    var product = {
+      id: Date.now(),
+      name: name,
+      price: parseFloat(price),
+      qty: parseInt(qty),
+      barcode: barcode || '—',
+      addedAt: new Date().toLocaleString()
+    };
+
+    products.unshift(product);
+    try {
+      localStorage.setItem('udhyog_products', JSON.stringify(products));
+      renderList();
+      clearForm();
+      showMsg('Product "' + name + '" added successfully! ✔', 'success');
+    } catch (e) {
+      products.shift();
+      showMsg('Storage Error: Unable to add product.', 'error');
+    }
+  }
+
+  function removeProduct() {
+    var name    = document.getElementById('prod-name').value.trim();
+    var barcode = document.getElementById('prod-barcode').value.trim();
+
+    if (!name && !barcode) {
+      showMsg('Enter Product Name or Barcode to remove!', 'error');
+      return;
+    }
+
+    var original = products;
+    var before = products.length;
+    products = products.filter(function (p) {
+      if (barcode && p.barcode === barcode) return false;
+      if (name && p.name.toLowerCase() === name.toLowerCase()) return false;
+      return true;
+    });
+
+    if (products.length === before) {
+      showMsg('Product not found!', 'error');
+      return;
+    }
+
+    try {
+      localStorage.setItem('udhyog_products', JSON.stringify(products));
+      renderList();
+      clearForm();
+      showMsg('Product removed successfully!', 'success');
+    } catch (e) {
+      products = original;
+      showMsg('Storage Error: Unable to remove product.', 'error');
+    }
+  }
+
+  function deleteById(id) {
+    var original = products;
+    products = products.filter(function (p) { return p.id !== id; });
+    try {
+      localStorage.setItem('udhyog_products', JSON.stringify(products));
+      renderList();
+    } catch(e) {
+      products = original;
+      alert('Storage Error: Unable to delete product.');
+    }
+  }
+
+  function renderList() {
+    var el = document.getElementById('prod-list');
+    if (products.length === 0) {
+      el.innerHTML = '<div class="no-products">No products added yet.</div>';
+      return;
+    }
+    el.innerHTML = products.map(function (p) {
+      return '<div class="product-item">' +
+        '<div>' +
+          '<div class="p-name">' + esc(p.name) + '</div>' +
+          '<div class="p-meta">Qty: ' + p.qty + ' &nbsp;|&nbsp; Barcode: ' + esc(p.barcode) + '</div>' +
+          '<div class="p-meta" style="color:#444">' + p.addedAt + '</div>' +
+        '</div>' +
+        '<div style="text-align:right">' +
+          '<div class="p-price">&#8377;' + Number(p.price).toLocaleString('en-IN', {minimumFractionDigits:2}) + '</div>' +
+          '<button onclick="deleteById(' + p.id + ')" style="background:none;border:none;color:#f44336;font-size:12px;cursor:pointer;margin-top:5px;font-family:Arial">&#10005; Remove</button>' +
+        '</div>' +
+      '</div>';
+    }).join('');
+  }
+
+  function esc(s) {
+    return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function scanBarcode() {
+    // Simulated scan - in real app this would open camera
+    var fake = 'BAR' + Math.floor(Math.random() * 900000 + 100000);
+    document.getElementById('prod-barcode').value = fake;
+    document.getElementById('prod-barcode').focus();
+  }
+</script>
+
+</body>
+</html>

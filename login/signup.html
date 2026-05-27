@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up - Udhyog Invoice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700;800&family=Noto+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="login-style.css" />
+</head>
+<body>
+
+  <!-- Background shapes -->
+  <div class="bg-shapes">
+    <div class="shape shape1"></div>
+    <div class="shape shape2"></div>
+    <div class="shape shape3"></div>
+  </div>
+
+  <!-- NAV BAR -->
+  <nav class="login-nav">
+    <a href="../index.html" class="logo">
+      <div class="logo-icon">U</div>
+      <span class="logo-text">Udhyog <span class="accent">Invoice</span></span>
+    </a>
+    <a href="../index.html" class="back-link">← Back to Home</a>
+  </nav>
+
+  <!-- SIGNUP BOX -->
+  <div class="main-wrap">
+    <div class="login-box">
+
+      <div class="login-header">
+        <div class="login-avatar">🚀</div>
+        <h2 class="form-heading">Create New Account</h2>
+        <p class="sub-text">Fill in the details below to get started!</p>
+      </div>
+
+      <div id="msg-box" class="msg-box" style="display:none;"></div>
+
+      <div class="form-group">
+        <label for="fullname">Full Name</label>
+        <div class="input-wrap">
+          <span class="input-icon">👤</span>
+          <input type="text" id="fullname" placeholder="e.g. Ramesh Kumar" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="business">Business Name</label>
+        <div class="input-wrap">
+          <span class="input-icon">🏢</span>
+          <input type="text" id="business" placeholder="e.g. Sharma Traders" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉️</span>
+          <input type="email" id="email" placeholder="example@gmail.com" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <div class="input-wrap">
+          <span class="input-icon">📱</span>
+          <input type="text" id="phone" placeholder="+91 98765 43210" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔑</span>
+          <input type="password" id="password" placeholder="Min. 6 characters" />
+          <span class="show-pass" onclick="togglePass('password', this)">Show</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">Confirm Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" id="confirm" placeholder="Re-enter your password" />
+          <span class="show-pass" onclick="togglePass('confirm', this)">Show</span>
+        </div>
+      </div>
+
+      <div class="terms-row">
+        <input type="checkbox" id="terms" />
+        <label for="terms">I agree to the <a href="#">Terms &amp; Conditions</a></label>
+      </div>
+
+      <button class="btn-login" onclick="doSignup()">Create Account →</button>
+
+      <div class="divider"><span>OR</span></div>
+
+      <p class="signup-text">Already have an account? <a href="loginnew.html">Login here</a></p>
+
+      <div class="free-badge">🎉 100% Free — No credit card needed</div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    &copy; 2026 <b>Udhyog Invoice</b> &mdash; Made with &#10084; for Indian Businesses
+  </div>
+
+  <script>
+    function togglePass(id, btn) {
+      var inp = document.getElementById(id);
+      if (inp.type === 'password') {
+        inp.type = 'text';
+        btn.textContent = 'Hide';
+      } else {
+        inp.type = 'password';
+        btn.textContent = 'Show';
+      }
+    }
+
+    function doSignup() {
+      var name     = document.getElementById('fullname').value.trim();
+      var business = document.getElementById('business').value.trim();
+      var email    = document.getElementById('email').value.trim();
+      var phone    = document.getElementById('phone').value.trim();
+      var pass     = document.getElementById('password').value.trim();
+      var confirm  = document.getElementById('confirm').value.trim();
+      var terms    = document.getElementById('terms').checked;
+      var msg      = document.getElementById('msg-box');
+
+      if (!name || !business || !email || !phone || !pass || !confirm) {
+        msg.style.display = 'block';
+        msg.className = 'msg-box error';
+        msg.textContent = 'Please fill in all fields!';
+        return;
+      }
+      if (!email.includes('@')) {
+        msg.style.display = 'block';
+        msg.className = 'msg-box error';
+        msg.textContent = 'Please enter a valid email address!';
+        return;
+      }
+      if (pass.length < 6) {
+        msg.style.display = 'block';
+        msg.className = 'msg-box error';
+        msg.textContent = 'Password must be at least 6 characters!';
+        return;
+      }
+      if (pass !== confirm) {
+        msg.style.display = 'block';
+        msg.className = 'msg-box error';
+        msg.textContent = 'Passwords do not match!';
+        return;
+      }
+      if (!terms) {
+        msg.style.display = 'block';
+        msg.className = 'msg-box error';
+        msg.textContent = 'Please accept the Terms & Conditions!';
+        return;
+      }
+
+      try {
+        localStorage.setItem('udhyog_signup_email', email);
+        msg.style.display = 'block';
+        msg.className = 'msg-box success';
+        msg.textContent = 'Account created successfully! Redirecting to login...';
+
+        setTimeout(function () {
+          window.location.href = 'loginnew.html';
+        }, 1800);
+      } catch (e) {
+        msg.style.display = 'block';
+        msg.className = 'msg-box error';
+        msg.textContent = 'Storage Error: Unable to save account. Storage might be full.';
+      }
+    }
+  </script>
+
+</body>
+</html>
